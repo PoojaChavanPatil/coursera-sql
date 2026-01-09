@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your First Queries</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>Your First Queries</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <div class="key-concept" aria-labelledby="intro-concept">
+                <h2 id="introduction" class="sr-only">Introduction</h2>
+                <h3 id="intro-concept" class="sr-only">Real-world Context</h3>
+                <p>Let's say you're a data analyst at a growing bookstore chain, and your manager needs to know which customers are the most active across different locations. How would you quickly get this information from your database? Together we'll learn how to write SQL queries that help solve real business problems like this one.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="learning-objectives" class="step-section">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>By the end of this screencast, you'll be able to:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Write basic SQL queries to retrieve specific data</li>
+                <li>Filter data using WHERE clauses</li>
+                <li>Combine conditions using logical operators</li>
+                <li>Apply these skills to real business scenarios</li>
+            </ul>
+        </section>
+
+        <section aria-labelledby="database-connection" class="step-section">
+            <h2 id="database-connection">Database Connection</h2>
+            <div class="interactive-prompt" role="group" aria-labelledby="connection-prompt">
+                <h3 id="connection-prompt" class="sr-only">Connection Prompt</h3>
+                <p>Let's start by running the first cell to connect to our database with the provided code</p>
+            </div>
+            
+            <div role="region" aria-labelledby="connection-code" class="code-example">
+                <h3 id="connection-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Database connection code">import sqlite3
+import pandas as pd
+conn = sqlite3.connect('bookcycle.db')</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="connection-explanation">
+                <h3 id="connection-explanation" class="sr-only">Connection Explanation</h3>
+                <p>We're importing two essential libraries: sqlite3 for database operations and pandas for data manipulation. Then we're creating a connection to our database named 'bookcycle.db'.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="first-query" class="operation-section">
+            <h2 id="first-query">Your First Query</h2>
+            <p>Now, let's examine a query. Just like when you're starting a new analysis project, we want to get a feel for our data, so we'll pull just the first five lines from the customers table:</p>
+            
+            <div role="region" aria-labelledby="first-select" class="code-example">
+                <h3 id="first-select" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="First SELECT query example">SELECT *
+FROM customer
+LIMIT 5;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="query-components">
+                <h3 id="query-components">Query Components</h3>
+                <p>Let's break this down:</p>
+                <ul aria-label="Query components explanation">
+                    <li>SELECT * means we want all columns</li>
+                    <li>FROM customer specifies our table</li>
+                    <li>LIMIT 5 shows just the first five rows This is like taking a quick peek at your data before diving deeper.</li>
+                </ul>
+            </div>
+            
+            <div class="interactive-challenge" role="group" aria-labelledby="expand-challenge">
+                <h3 id="expand-challenge" class="sr-only">Expansion Challenge</h3>
+                <p>Now let's try a query that will expand our resulting output: Try typing the query <code>SELECT * FROM customer</code>. The output from this query is all columns and every row from the customer table, rather than just the first five rows.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="specific-columns" class="operation-section">
+            <h2 id="specific-columns">Selecting Specific Columns</h2>
+            <div class="key-concept" aria-labelledby="columns-concept">
+                <h3 id="columns-concept" class="sr-only">Specific Columns Concept</h3>
+                <p>In real scenarios, you rarely need all columns. Let's say your marketing team needs a list of customer ids, their join date and their member status and preferred_store.</p>
+            </div>
+            
+            <p>The query for that is as follows:</p>
+            
+            <div role="region" aria-labelledby="specific-columns-code" class="code-example">
+                <h3 id="specific-columns-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Selecting specific columns example">SELECT customer_id, is_member, preferred_store
+FROM customer;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="specific-columns-explanation">
+                <h3 id="specific-columns-explanation" class="sr-only">Specific Columns Explanation</h3>
+                <p>We're being more precise now - selecting exactly what we need. This is not only more efficient but also makes our results clearer to understand.</p>
+            </div>
+            
+            <div class="interactive-challenge" role="group" aria-labelledby="columns-challenge">
+                <h3 id="columns-challenge" class="sr-only">Columns Challenge</h3>
+                <p>Let's try another query using only specific column names. Type out a query that selects the customer_id, join date and member status. The query should read: <code>SELECT customer_id, join_date, is_member FROM customer</code>.</p>
+            </div>
+
+            <div class="interactive-question" role="group" aria-labelledby="efficiency-question">
+                <h3 id="efficiency-question">Interactive Question</h3>
+                <p>Why might selecting specific columns be better than SELECT *? Think about database performance and data clarity.</p>
+                
+                <details>
+                    <summary role="button" aria-expanded="false">Reveal answer</summary>
+                    <div aria-live="polite">
+                        <p>You are right if you thought that by selecting specific columns improves performance by reducing data transfer and makes your query results clearer and easier to understand.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+        
+        <section aria-labelledby="filtering-data" class="operation-section">
+            <h2 id="filtering-data">Filtering Data with WHERE</h2>
+            <div class="key-concept" aria-labelledby="where-concept">
+                <h3 id="where-concept" class="sr-only">WHERE Clause Concept</h3>
+                <p>Now, let's say BookCycle wants to focus on their Downtown customers. This is a great place to utilize the WHERE clause.</p>
+            </div>
+            
+            <div class="interactive-prompt" role="group" aria-labelledby="where-prompt">
+                <h3 id="where-prompt" class="sr-only">WHERE Prompt</h3>
+                <p>Try typing this query: <code>SELECT customer_id, preferred_store FROM customer WHERE preferred_store = 'Downtown'</code>.</p>
+            </div>
+            
+            <div role="region" aria-labelledby="where-clause-code" class="code-example">
+                <h3 id="where-clause-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="WHERE clause example">SELECT customer_id, preferred_store
+FROM customers
+WHERE preferred_store = 'Downtown'</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="warning-note" role="alert" aria-labelledby="syntax-warning">
+                <h3 id="syntax-warning">Important Syntax Note</h3>
+                <p>Notice the single quotes around Downtown - this is important for text values, and our query won't work without this required syntax.</p>
+                <ul aria-label="Important syntax notes">
+                    <li><strong>Common Error Alert:</strong> A common mistake is using double quotes instead of single quotes for text values. In SQL, single quotes are the standard for string values.</li>
+                </ul>
+            </div>
+            
+            <div class="verification-section" aria-labelledby="where-verification">
+                <h3 id="where-verification" class="sr-only">Verification</h3>
+                <p>Notice from the output that the WHERE clause acts like a filter, showing only rows that match our condition.</p>
+            </div>
+            
+            <div class="interactive-challenge" role="group" aria-labelledby="university-challenge">
+                <h3 id="university-challenge" class="sr-only">University Challenge</h3>
+                <p>Let's try a similar query together. Try forming a query to find customers who prefer the University store and include their member status. Your query should read <code>SELECT customer_id, is_member, preferred_store FROM customer WHERE preferred_store = 'University'</code>. Your output should reveal only those customers whose preferred store is University along with their member status.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="logical-operators" class="operation-section">
+            <h2 id="logical-operators">Using Logical Operators</h2>
+            <div class="key-concept" aria-labelledby="logical-concept">
+                <h3 id="logical-concept" class="sr-only">Logical Operators Concept</h3>
+                <p>Real business questions often require multiple conditions. Let's explore how to combine filtering conditions.</p>
+            </div>
+            
+            <p>For example, let's find customers who prefer the Downtown store location AND are members:</p>
+            
+            <div role="region" aria-labelledby="and-operator-code" class="code-example">
+                <h3 id="and-operator-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="AND operator example">SELECT customer_id, is_member, preferred_store
+FROM customer
+WHERE preferred_store = 'Downtown'
+AND is_member = 1;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="and-explanation">
+                <h3 id="and-explanation" class="sr-only">AND Explanation</h3>
+                <p>Using the AND operator in this query lets us combine conditions. Both our WHERE clause condition and the AND condition must be true for a row to appear in our results.</p>
+            </div>
+            
+            <div class="interactive-challenge" role="group" aria-labelledby="or-challenge">
+                <h3 id="or-challenge" class="sr-only">OR Challenge</h3>
+                <p>We can also use OR for alternative conditions. Try creating a query that shows which customers prefer either the Downtown store OR the University store. Your query should be:</p>
+                <p><code>SELECT customer_id, preferred_store FROM customer WHERE preferred_store = 'Downtown' OR preferred_store = 'University'</code></p>
+            </div>
+            
+            <div role="region" aria-labelledby="or-operator-code" class="code-example">
+                <h3 id="or-operator-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="OR operator example">SELECT customer_id, preferred_store
+FROM customer
+WHERE preferred_store = 'Downtown'
+OR preferred_store = 'University';</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="verification-section" aria-labelledby="or-verification">
+                <h3 id="or-verification" class="sr-only">OR Verification</h3>
+                <p>You'll notice your output now shows all customer ids that have either the preferred store location of university or downtown!</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="conclusion" class="benefits">
+            <h2 id="conclusion">Conclusion</h2>
+            <p>Let's recap. We've covered how to:</p>
+            <ul aria-label="Skills summary">
+                <li>Connect to a database and retrieve data</li>
+                <li>Select specific columns for focused analysis</li>
+                <li>Filter data using WHERE clauses</li>
+                <li>Combine conditions with AND and OR</li>
+            </ul>
+            <p>These are fundamental skills you'll use in the field of data science.</p>
+            
+            <div class="pro-tip" aria-labelledby="practice-tip">
+                <h3 id="practice-tip" class="sr-only">Practice Tip</h3>
+                <p>Practice writing these queries on your own, and try combining different conditions to answer various business questions. The more you practice, the more intuitive SQL will become!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="validation-points" aria-labelledby="key-takeaways">
+            <h3 id="key-takeaways">Key Takeaways</h3>
+            <ul aria-label="Final key points">
+                <li>SQL queries follow a logical structure that's easy to learn</li>
+                <li>Always verify your queries before running them on production databases</li>
+                <li>Start simple and gradually add complexity as you master each concept</li>
+            </ul>
+        </div>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>

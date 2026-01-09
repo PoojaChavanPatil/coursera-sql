@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Cleaning Challenges</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>Data Cleaning Challenges</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <h2 id="introduction">Introduction</h2>
+            <p>Narrator: Welcome to the Data Cleaning Challenges lab! Today, we'll be working as data analysts at BookCycle, dealing with messy transaction records. We'll learn how to clean data using SQL, making it ready for analysis.</p>
+        </section>
+
+        <section aria-labelledby="learning-objectives">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>By the end of this lab, you'll be able to:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Identify and handle missing values in SQL</li>
+                <li>Standardize date formats across a dataset</li>
+                <li>Remove duplicate records from a table</li>
+                <li>Transform data to ensure consistency</li>
+            </ul>
+            <p>Let's put these skills into practice!</p>
+        </section>
+        
+        <section aria-labelledby="setup">
+            <h2 id="setup">Environment Setup</h2>
+            <p>First, let's set up our environment and explore our data.</p>
+            
+            <div role="region" aria-labelledby="setup-code" class="code-example">
+                <h3 id="setup-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Environment setup code">import sqlite3
+import pandas as pd
+from datetime import datetime
+
+# Setting up the database
+from db_setup import setup_database
+setup_database() 
+
+# Connect to the database
+conn = sqlite3.connect('bookcycle.db')</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+        </section>
+        
+        <section aria-labelledby="data-exploration">
+            <h2 id="data-exploration">Exploring the Dataset</h2>
+            <p>Now, let's look at our first query:</p>
+            
+            <div role="region" aria-labelledby="first-query" class="code-example">
+                <h3 id="first-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="First query example">SELECT * 
+FROM transactions_uncleaned_data
+LIMIT 5;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="query-explanation">
+                <h3 id="query-explanation">Query Explanation</h3>
+                <p>This SQL query:</p>
+                <ul aria-label="Query components explanation">
+                    <li>Uses SELECT * to retrieve all columns</li>
+                    <li>From our transactions_uncleaned_data table</li>
+                    <li>LIMIT 5 shows just the first five rows to give us a snapshot</li>
+                    <li>This helps us understand our data structure without overwhelming us</li>
+                </ul>
+            </div>
+            
+            <div class="data-columns" aria-labelledby="data-structure">
+                <h3 id="data-structure">Data Structure</h3>
+                <p>Looking at these results, we can see columns for:</p>
+                <ul aria-label="Data columns list">
+                    <li>transaction_id</li>
+                    <li>date_time</li>
+                    <li>store_location</li>
+                    <li>customer_id</li>
+                    <li>book_id</li>
+                    <li>sale_price</li>
+                    <li>payment_method</li>
+                    <li>is_online</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section aria-labelledby="missing-values">
+            <h2 id="missing-values">Checking for Missing Values</h2>
+            <p>Now, let's write a comprehensive query to check for missing values:</p>
+            
+            <div role="region" aria-labelledby="missing-values-check" class="code-example">
+                <h3 id="missing-values-check" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Missing values check query">SELECT COUNT(*) AS total_rows,
+SUM(CASE WHEN transaction_id IS NULL THEN 1 ELSE 0 END) AS missing_transaction_id,
+SUM(CASE WHEN date_time IS NULL THEN 1 ELSE 0 END) AS missing_date_time,
+SUM(CASE WHEN store_location IS NULL THEN 1 ELSE 0 END) AS missing_store_location,
+SUM(CASE WHEN customer_id IS NULL THEN 1 ELSE 0 END) AS missing_customer_id,
+SUM(CASE WHEN book_id IS NULL THEN 1 ELSE 0 END) AS missing_book_id,
+SUM(CASE WHEN sale_price IS NULL THEN 1 ELSE 0 END) AS missing_sale_price,
+SUM(CASE WHEN payment_method IS NULL THEN 1 ELSE 0 END) AS missing_payment_method,
+SUM(CASE WHEN is_online IS NULL THEN 1 ELSE 0 END) AS missing_is_online
+FROM transactions_uncleaned_data;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="missing-values-explanation">
+                <h3 id="missing-values-explanation">Understanding the Missing Values Query</h3>
+                <p>Let's break down this query:</p>
+                <ul aria-label="Missing values query explanation">
+                    <li>COUNT(*) gives us the total number of rows</li>
+                    <li>Then, we use a combination of CASE and SUM to count missing values</li>
+                    <li>For each row, the CASE statement asks: 'Is the transaction_id NULL?' If yes, it counts as 1; if no, it counts as 0</li>
+                    <li>When we SUM these up, we get the total number of missing transaction IDs</li>
+                </ul>
+            </div>
+            
+            <p>Next we'll examine unique values in categorical columns:</p>
+            
+            <div role="region" aria-labelledby="distinct-values-query" class="code-example">
+                <h3 id="distinct-values-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Distinct values query">query = """
+SELECT DISTINCT store_location FROM transactions_uncleaned_data;
+"""
+df = pd.read_sql_query(query, conn)
+display(df)
+query = """
+SELECT DISTINCT payment_method FROM transactions_uncleaned_data;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>By using the DISTINCT keyword in each of these queries, we are able to pull only the unique store locations and payment methods from our data.</p>
+        </section>
+        
+        <section aria-labelledby="handling-missing">
+            <h2 id="handling-missing">Handling Missing Values</h2>
+            <p>Now that we know where our missing values are, let's handle them systematically. First we'll run a delete statement, then confirm our changes by displaying our data.</p>
+            
+            <div class="cleaning-step" aria-labelledby="missing-transaction-ids">
+                <h3 id="missing-transaction-ids">Step 1: Handling Missing Transaction IDs</h3>
+                <div role="region" aria-labelledby="delete-missing-ids" class="code-example">
+                    <h4 id="delete-missing-ids" class="code-label">[Code begins here]</h4>
+                    <pre><code aria-label="Delete missing transaction IDs">DELETE FROM transactions_uncleaned_data
+WHERE transaction_id IS NULL;
+# Confirm changes
+df = pd.read_sql_query("SELECT * FROM transactions_uncleaned_data LIMIT 5;", conn)
+display(df)</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                
+                <div class="explanation" aria-labelledby="delete-explanation">
+                    <h4 id="delete-explanation">Understanding the DELETE Statement</h4>
+                    <p>This DELETE statement:</p>
+                    <ul aria-label="Delete statement explanation">
+                        <li>Removes any rows where transaction_id is NULL</li>
+                        <li>We do this first because transaction_id is our primary key</li>
+                        <li>Without a valid transaction_id, we can't properly track these sales</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="cleaning-step" aria-labelledby="missing-store-locations">
+                <h3 id="missing-store-locations">Step 2: Handling Missing Store Locations</h3>
+                <div role="region" aria-labelledby="update-store-locations" class="code-example">
+                    <h4 id="update-store-locations" class="code-label">[Code begins here]</h4>
+                    <pre><code aria-label="Update missing store locations">UPDATE transactions_uncleaned_data
+SET store_location = 'Unknown'
+WHERE store_location IS NULL OR store_location = '';
+# Confirm changes
+df = pd.read_sql_query("SELECT * FROM transactions_uncleaned_data", conn)
+display(df)</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                
+                <div class="explanation" aria-labelledby="update-explanation">
+                    <h4 id="update-explanation">Understanding the UPDATE Statement</h4>
+                    <p>Next we'll utilize an update statement and confirm changes again. This UPDATE statement:</p>
+                    <ul aria-label="Update statement explanation">
+                        <li>Finds rows where store_location is NULL OR empty ('')</li>
+                        <li>Then replaces these missing values with 'Unknown'</li>
+                        <li>We use 'Unknown' instead of deleting because this data might still be useful</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="cleaning-step" aria-labelledby="missing-payment-methods">
+                <h3 id="missing-payment-methods">Step 3: Handling Missing Payment Methods</h3>
+                <div role="region" aria-labelledby="update-payment-methods" class="code-example">
+                    <h4 id="update-payment-methods" class="code-label">[Code begins here]</h4>
+                    <pre><code aria-label="Update missing payment methods">UPDATE transactions_uncleaned_data
+SET payment_method = (
+    SELECT payment_method
+    FROM transactions_uncleaned_data
+    WHERE payment_method IS NOT NULL AND payment_method != ''
+    GROUP BY payment_method
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+)
+WHERE payment_method IS NULL OR payment_method = '';</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                
+                <div class="explanation" aria-labelledby="complex-update-explanation">
+                    <h4 id="complex-update-explanation">Understanding the Complex UPDATE</h4>
+                    <p>Next, let's fill in missing payment method information. This complex UPDATE statement:</p>
+                    <ul aria-label="Complex update explanation">
+                        <li>Uses a subquery to find the most common payment method</li>
+                        <li>GROUP BY and COUNT(*) determine the frequency</li>
+                        <li>ORDER BY COUNT(*) DESC gets the highest frequency first</li>
+                        <li>LIMIT 1 selects only the most common method</li>
+                        <li>Then updates all NULL payment methods with this value</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section aria-labelledby="standardizing-dates">
+            <h2 id="standardizing-dates">Standardizing Date Formats</h2>
+            <p>With our missing values handled, we can now address date standardization, which is crucial for consistent analysis. First let's use a SELECT statement with DISTINCT to find all unique dates and times from the date/time column.</p>
+            
+            <div role="region" aria-labelledby="check-date-formats" class="code-example">
+                <h3 id="check-date-formats" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Check date formats query">query = """
+SELECT DISTINCT date_time FROM transactions_uncleaned_data;
+"""
+df = pd.read_sql_query(query, conn)
+display(df.iloc[66:71])</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>We can see that our dataset does indeed contain some dates with different formats.
+            <br>We should ensure the format is consistent across the entire date_time column. To do this, we'll utilize some additional Python code.</p>
+
+            <div role="region" aria-labelledby="date-standardization" class="code-example">
+                <h3 id="date-standardization" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Date standardization code">df = pd.read_sql_query("SELECT * FROM transactions_uncleaned_data", conn)
+
+# Convert known date formats to datetime object
+converted_dates = pd.to_datetime(df['date_time'], errors='coerce', dayfirst=True)
+df['date_time'] = converted_dates.dt.strftime('%Y-%m-%d %H:%M')
+
+# Reload cleaned DataFrame into SQLite
+df.to_sql('transactions_uncleaned_data', conn, index=False, if_exists='replace')</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="date-standardization-process">
+                <h3 id="date-standardization-process">Date Standardization Process</h3>
+                <p>Let's break down this date standardization:</p>
+                <ul aria-label="Date standardization explanation">
+                    <li>We first convert our query into a dataframe</li>
+                    <li>Then we clean up our dates. Dates can be tricky because they might be written in different formats. Some might be month-first, others day-first, and they could use different separators like slashes or dashes</li>
+                    <li>We're using pandas to standardize all these dates. The code looks at each date entry, tries to figure out its format (assuming the day comes first), and converts it into a consistent format: year, month, day, followed by hours and minutes. If it can't convert a date, it won't break - it'll just mark that entry as missing</li>
+                    <li>Finally, we're saving our cleaned-up data back to the database, replacing the old version with our newly cleaned one</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section aria-labelledby="finding-duplicates">
+            <h2 id="finding-duplicates">Finding and Removing Duplicates</h2>
+            <p>Finally, let's identify potential duplicate records by grouping identical rows and counting their occurrences.</p>
+            
+            <div role="region" aria-labelledby="finding-duplicates-query" class="code-example">
+                <h3 id="finding-duplicates-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Finding duplicates query">SELECT *, COUNT(*) as count
+FROM transactions_uncleaned_data
+GROUP BY transaction_id, date_time, store_location, customer_id, 
+         book_id, sale_price, payment_method, is_online
+HAVING count > 1;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="duplicate-finding-explanation">
+                <h3 id="duplicate-finding-explanation">Understanding the Duplicate-Finding Query</h3>
+                <p>This duplicate-finding query:</p>
+                <ul aria-label="Duplicate finding query explanation">
+                    <li>Groups by all columns to find exact duplicates</li>
+                    <li>COUNT(*) counts occurrences of each combination</li>
+                    <li>HAVING count > 1 shows only the duplicates</li>
+                    <li>This helps us identify problematic records</li>
+                </ul>
+            </div>
+            
+            <p>We can then remove those duplicates from our analysis by using SELECT DISTINCT. This keeps only the first occurrence of a duplicated row.</p>
+
+            <div role="region" aria-labelledby="remove-duplicates" class="code-example">
+                <h3 id="remove-duplicates" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Remove duplicates query">query = """
+SELECT DISTINCT *
+FROM transactions_uncleaned_data
+"""
+df = pd.read_sql_query(query, conn)
+display(df)
+
+# Reload cleaned DataFrame into SQLite
+df.to_sql('transactions_uncleaned_data', conn, index=False, if_exists='replace')</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+        </section>
+        
+        <section aria-labelledby="verification">
+            <h2 id="verification">Verification</h2>
+            <p>Finally, let's run a query to verify our work.</p>
+            
+            <div role="region" aria-labelledby="verification-query" class="code-example">
+                <h3 id="verification-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Verification query">SELECT COUNT(*) as total_rows,
+       COUNT(DISTINCT transaction_id) as unique_transactions,
+       MIN(date_time) as earliest_date,
+       MAX(date_time) as latest_date,
+       COUNT(DISTINCT store_location) as unique_locations,
+       COUNT(DISTINCT payment_method) as unique_payment_methods
+FROM transactions_uncleaned_data;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="verification" aria-labelledby="verification-process">
+                <h3 id="verification-process">Verification Process</h3>
+                <p>Our verification query checks:</p>
+                <ul aria-label="Verification process details">
+                    <li>Total rows vs unique transactions</li>
+                    <li>Date range validity</li>
+                    <li>Number of unique locations and payment methods</li>
+                    <li>This confirms our cleaning was successful</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section aria-labelledby="conclusion">
+            <h2 id="conclusion">Conclusion</h2>
+            <p>Let's review what we've accomplished:</p>
+            <ul aria-label="Accomplishments summary">
+                <li>Explored and understood our data structure</li>
+                <li>Identified and handled missing values appropriately</li>
+                <li>Standardized date formats across the dataset</li>
+                <li>Analyzed duplicate records</li>
+                <li>Verified our cleaning process</li>
+                <li>These techniques form the foundation of good data analysis, ensuring our subsequent analysis will be accurate and reliable</li>
+            </ul>
+            
+            <p>Thank you for following along with this detailed data cleaning process. Remember, clean data is the foundation of good analysis!</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>

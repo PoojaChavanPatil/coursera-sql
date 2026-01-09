@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Assisted Query Optimization</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>AI-Assisted Query Optimization</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <h2 id="introduction">Introduction</h2>
+            <p>Picture yourself as a data analyst tasked with speeding up your company's database queries. Sounds daunting, right? Well, what if I told you that AI could be your secret weapon? In this video, we'll explore how AI-assisted optimization can revolutionize your SQL queries, making you a data hero in no time!</p>
+        </section>
+
+        <section aria-labelledby="learning-objectives">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>By the end of this video, you'll be able to:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Use AI tools to analyze SQL queries for potential optimizations</li>
+                <li>Interpret AI suggestions for query restructuring and indexing</li>
+                <li>Implement AI-recommended optimizations to improve query performance</li>
+            </ul>
+        </section>
+        
+        <section aria-labelledby="scenario">
+            <h2 id="scenario">Real-World Scenario</h2>
+            <p>Let's look into a real-world scenario. You're working for BookCycle, a growing bookstore chain. They need to identify their top customers quickly, but their current query is sluggish. This current query joins the customers and transactions tables to find customers with more than 5 purchases, ordered by total amount spent. Let's see how AI can help us optimize it.</p>
+            
+            <div role="region" aria-labelledby="original-query" class="code-example">
+                <h3 id="original-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Original SQL query">SELECT c.customer_id, COUNT(t.transaction_id) as purchase_count, SUM(t.sale_price) as total_spent
+FROM customers c
+JOIN transactions t ON c.customer_id = t.customer_id
+GROUP BY c.customer_id
+HAVING COUNT(t.transaction_id) > 5
+ORDER BY total_spent DESC
+LIMIT 10;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+        </section>
+        
+        <section aria-labelledby="ai-analysis">
+            <h2 id="ai-analysis">AI Analysis</h2>
+            <p>In practice, this could be a tool like Amazon's Query Optimization, Google's BigQuery ML, or Generative AI models. Alternatively you can paste your query into an AI, and ask the AI for potential optimizations. For the purposes of this video, we'll simulate the AI's response.</p>
+            
+            <div class="ai-suggestion" aria-labelledby="ai-suggestion-heading">
+                <h3 id="ai-suggestion-heading">AI Suggestion</h3>
+                <p>Our simulated AI response suggests that we restructure the query. Instead of directly joining the customers and transactions tables, consider using a Common Table Expression (CTE) to first aggregate transaction data. This approach improves query performance by first aggregating the transactions data, which reduces the number of rows before joining with the customers table. It's especially efficient when dealing with large transaction tables, as it minimizes the data the database needs to process.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="implementing-changes">
+            <h2 id="implementing-changes">Implementing AI-Recommended Changes</h2>
+            <p>Let's apply these suggestions to our query.</p>
+            
+            <div role="region" aria-labelledby="optimized-query" class="code-example">
+                <h3 id="optimized-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Optimized SQL query">WITH transaction_metrics AS (
+    SELECT customer_id,
+           COUNT(*) as purchase_count,
+           SUM(sale_price) as total_spent
+    FROM transactions
+    GROUP BY customer_id
+    HAVING COUNT(*) > 5   -- Keep HAVING for aggregate condition
+)
+SELECT c.customer_id,
+       tm.purchase_count,
+       tm.total_spent
+FROM customers c
+INNER JOIN transaction_metrics tm ON c.customer_id = tm.customer_id
+ORDER BY tm.total_spent DESC
+LIMIT 10;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="optimization-explanation">
+                <h3 id="optimization-explanation">How the Optimization Works</h3>
+                <p>The query optimization uses a Common Table Expression (CTE) to pre-aggregate the transaction data before joining with the customers table. This reduces the data volume early in the process, making the subsequent join operation more efficient. By first filtering customers with more than 5 purchases in the CTE, then joining this smaller dataset with the customers table, the query processes less data while maintaining the same results. This update should be more efficient, especially with larger datasets.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="verification">
+            <h2 id="verification">Verifying Results</h2>
+            <div class="verification-note" aria-labelledby="verification-note">
+                <h3 id="verification-note" class="sr-only">Verification Note</h3>
+                <p>Always remember to verify your results after optimization. Let's compare the output of both queries.</p>
+                <p>Great! Our results match, but the optimized query should perform better, especially as our dataset grows.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="real-world-impact">
+            <h2 id="real-world-impact">Real-World Impact</h2>
+            <p>So, why does this matter in the real world? Faster queries mean:</p>
+            <div class="benefits" aria-labelledby="faster-query-benefits">
+                <h3 id="faster-query-benefits">Benefits of Faster Queries</h3>
+                <ul aria-label="Benefits of faster queries">
+                    <li>Quicker insights for business decisions</li>
+                    <li>Improved user experience for customer-facing applications</li>
+                    <li>Reduced server load and potential cost savings</li>
+                </ul>
+                <p>Imagine being able to provide real-time recommendations to customers or instant analytics to your management team. That's the power of AI-assisted query optimization!</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="conclusion">
+            <h2 id="conclusion">Conclusion</h2>
+            <p>Let's recap what we've learned:</p>
+            <ul aria-label="Key takeaways">
+                <li>AI can analyze and suggest improvements for your SQL queries</li>
+                <li>Common optimizations include indexing, query restructuring, and clause placement</li>
+                <li>Always verify results after optimization</li>
+                <li>Remember, AI is a powerful tool, but it's your understanding of the data and business needs that makes the real difference.</li>
+            </ul>
+        </section>
+        
+        <section aria-labelledby="call-to-action">
+            <h2 id="call-to-action">Next Steps</h2>
+            <p>Now it's your turn! Take a complex query from your current project and try running it through an AI optimizer. You might be surprised at the improvements you can make. Happy querying!</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTEs in Practice</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>CTEs in Practice</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <h2 id="introduction">Introduction</h2>
+            <p>Have you ever felt overwhelmed by complex SQL queries? Imagine simplifying those intricate data analyses into clear, powerful, and efficient code. In this video, we're delving into Common Table Expressions (CTEs) and Window Functions – two game-changing techniques that will revolutionize how you approach SQL queries in your data science career.</p>
+        </section>
+
+        <section aria-labelledby="learning-objectives">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>By the end of this video, you'll be able to:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Simplify complex queries using CTEs</li>
+                <li>Apply window functions for advanced data analysis</li>
+                <li>Evaluate how CTEs and window functions improve query clarity and performance</li>
+            </ul>
+        </section>
+        
+        <section aria-labelledby="database-introduction">
+            <h2 id="database-introduction">Setting the Stage</h2>
+            <p>Let's jump into our BookCycle database. We're working with a bookstore chain that wants to analyze sales patterns across different locations. Our database has two main tables: 'books' and 'transactions'.</p>
+            <p>In a typical scenario, we might need to write nested subqueries to get the information we need. But in this video, we'll show you how CTEs and window functions can make this process much cleaner and more efficient.</p>
+        </section>
+        
+        <section aria-labelledby="cte-introduction">
+            <h2 id="cte-introduction">Introducing Common Table Expressions</h2>
+            <div class="key-concept" aria-labelledby="cte-concept">
+                <h3 id="cte-concept">What is a CTE?</h3>
+                <p>Let's start with a Common Table Expression, or CTE. Think of a CTE as a temporary named result set that you can reference within a SELECT statement.</p>
+            </div>
+            
+            <p>Here's how we can use a CTE to calculate total sales for each store location:</p>
+            
+            <div role="region" aria-labelledby="cte-store-sales" class="code-example">
+                <h3 id="cte-store-sales" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="CTE for store sales example">query = """
+WITH store_sales AS (
+    SELECT store_location, SUM(sale_price) AS total_sales
+    FROM transactions
+    GROUP BY store_location
+)
+SELECT *
+FROM store_sales
+ORDER BY total_sales DESC;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="cte-structure">
+                <h3 id="cte-structure">CTE Structure</h3>
+                <p>Notice how we've broken down our query into two logical parts:</p>
+                <ol aria-label="CTE structure explanation">
+                    <li>The first part houses a query inside the code WITH store_sales AS to create an auxiliary table named store sales.</li>
+                    <li>The second part is another query that retrieves data from it.</li>
+                </ol>
+                <p>This not only makes our code more readable but also allows us to reuse the 'store_sales' CTE if needed.</p>
+            </div>
+            
+            <p>Running this query gives us a clear view of each store's performance. This approach is particularly powerful when dealing with more complex analyses.</p>
+        </section>
+        
+        <section aria-labelledby="window-functions">
+            <h2 id="window-functions">Window Functions in Action</h2>
+            <div class="key-concept" aria-labelledby="window-function-concept">
+                <h3 id="window-function-concept">Understanding Window Functions</h3>
+                <p>Now, let's level up our analysis with window functions. A window function performs calculations across a specific 'window' or set of rows that are related to the current row.</p>
+            </div>
+            
+            <p>We'll use the ROW_NUMBER() function to rank books by sales within each genre:</p>
+            
+            <div role="region" aria-labelledby="window-function-example" class="code-example">
+                <h3 id="window-function-example" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Window function example">query = """
+WITH book_sales AS (
+    SELECT b.book_id, b.title, b.genre, COUNT(*) AS sales_count
+    FROM books b
+    JOIN transactions t ON b.book_id = t.book_id
+    GROUP BY b.book_id
+)
+SELECT 
+    book_id,
+    title,
+    genre,
+    sales_count,
+    ROW_NUMBER() OVER (PARTITION BY genre ORDER BY sales_count DESC) AS rank_in_genre
+FROM book_sales
+ORDER BY genre, rank_in_genre;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+
+            <div class="explanation" aria-labelledby="window-function-query">
+                <h3 id="window-function-query">Understanding the Window Function Query</h3>
+                <p>First we use a CTE to create a new temporary table called book_sales. This table counts how many times each book has been sold by joining the books table with the transactions table. The GROUP BY ensures that we count sales for each book_id.</p>
+                <p>Next we a query containing our window function, Row Number. The PARTITION BY clause divides our data into genres, and ORDER BY determines how we rank within each genre. It uses the ROW_NUMBER() window function to rank books within each genre based on sales_count (highest sales first).</p>
+            </div>
+            
+            <p>This query gives us a powerful view of top-selling books in each genre, which could be crucial for inventory management and marketing decisions.</p>
+        </section>
+        
+        <section aria-labelledby="combining-techniques">
+            <h2 id="combining-techniques">Combining CTEs and Window Functions</h2>
+            <p>Now, let's combine these techniques to create a truly insightful analysis. We'll identify top-selling books in each genre and calculate their percentage of total genre sales:</p>
+            
+            <div role="region" aria-labelledby="advanced-cte-window" class="code-example">
+                <h3 id="advanced-cte-window" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Advanced CTE and window function example">query = """
+WITH book_sales AS (
+    SELECT b.book_id, b.title, b.genre, COUNT(*) AS sales_count
+    FROM books b
+    JOIN transactions t ON b.book_id = t.book_id
+    GROUP BY b.book_id
+),
+genre_totals AS (
+    SELECT genre, SUM(sales_count) AS total_genre_sales
+    FROM book_sales
+    GROUP BY genre
+)
+SELECT 
+    bs.genre,
+    bs.title,
+    bs.sales_count,
+    ROW_NUMBER() OVER (PARTITION BY bs.genre ORDER BY bs.sales_count DESC) AS rank_in_genre,
+    ROUND(bs.sales_count * 100.0 / gt.total_genre_sales, 2) AS percent_of_genre_sales
+FROM book_sales bs
+JOIN genre_totals gt ON bs.genre = gt.genre
+WHERE rank_in_genre <= 3
+ORDER BY bs.genre, rank_in_genre;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+
+            <div class="explanation" aria-labelledby="complex-query-breakdown">
+                <h3 id="complex-query-breakdown">Breaking Down the Complex Query</h3>
+                <p>The first CTE creates a temporary table called book_sales. This table counts how many times each book has been sold by joining the books table with the transactions table. The GROUP BY ensures that we count sales for each book_id.</p>
+                <p>Then, another CTE creates a temporary table called genre_totals to calculate the total number of sales per genre by summing up the sales counts from book_sales.</p>
+                <p>Next we have our window function - row number. The PARTITION BY clause divides our data into genres, and ORDER BY determines how we rank within each genre. It uses the ROW_NUMBER() window function to rank books within each genre based on sales_count (highest sales first).</p>
+                <p>Additionally, the query calculates each book's percentage contribution to total genre sales by dividing its sales count by the total sales of its genre.</p>
+            </div>
+            
+            <div class="key-concept" aria-labelledby="business-insights">
+                <h3 id="business-insights">Business Insights</h3>
+                <p>This query provides a focused view of the top three best-selling books in each genre, along with their percentage contribution to total genre sales. This insight helps in identifying the most successful books per category, which can be useful for inventory planning and targeted marketing strategies.</p>
+                <p>These insights could drive critical business decisions, from inventory management to marketing strategies.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="conclusion">
+            <h2 id="conclusion">Conclusion</h2>
+            <p>We've seen how CTEs can simplify complex queries by breaking them into logical parts, and how window functions allow for advanced calculations across related rows. By combining these techniques, we can create powerful, readable queries that provide deep insights into our data.</p>
+            <p>Remember, practice is key to mastering these concepts. Don't be afraid to push the boundaries – try creating more complex CTEs or using different window functions. Your future self (and your future employers) will thank you for mastering these powerful SQL tools.</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en"> 
+    <head> 
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Getting Familiar with SQL in Jupyter Notebooks</title> 
+        <style>
+            /* Accessibility */
+            .sr-only {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                margin: -1px;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+                border: 0;
+            }
+            
+            /* Focus indicator for keyboard navigation */
+            :focus {
+                outline: 2px solid #4A90E2;
+                outline-offset: 2px;
+            }
+            
+            /* Code formatting */
+            .code-example {
+                background-color: #f5f5f5;
+                padding: 1em;
+                border-radius: 5px;
+                margin: 1em 0;
+                border-left: 4px solid #4CAF50;
+            }
+            
+            .code-label {
+                font-weight: bold;
+                color: #555;
+                display: block;
+                margin-bottom: 5px;
+            }
+            
+            /* Section styling */
+            .operation-section,
+            .step-section,
+            .design-step,
+            .cleaning-step {
+                border-left: 4px solid #2196F3;
+                padding-left: 1em;
+                margin: 1.5em 0;
+                padding-top: 0.5em;
+                padding-bottom: 0.5em;
+            }
+            
+            /* Explanation blocks */
+            .explanation {
+                margin: 1em 0;
+                padding: 0.5em;
+                background-color: #F8F9FA;
+                border-radius: 5px;
+            }
+            
+            /* Key concepts and interactive elements */
+            .key-concept {
+                background-color: #E3F2FD;
+                padding: 1em;
+                margin: 1em 0;
+                border-radius: 5px;
+                border-left: 4px solid #2196F3;
+            }
+            
+            .interactive-prompt,
+            .interactive-question,
+            .interactive-challenge,
+            .interactive-pause,
+            .pro-tip {
+                background-color: #e6f7ff;
+                padding: 0.5em 1em;
+                margin: 1em 0;
+                border-left: 4px solid #1890ff;
+                border-radius: 5px;
+            }
+            
+            .ai-suggestion {
+                background-color: #E3F2FD;
+                border-left: 4px solid #2196F3;
+                padding: 1em;
+                margin: 1em 0;
+            }
+            
+            /* Warning and verification */
+            .warning-note {
+                background-color: #FFF3E0;
+                border-left: 4px solid #FF9800;
+                padding: 1em;
+                margin: 1em 0;
+            }
+            
+            .verification,
+            .verification-section {
+                background-color: #E8F5E9;
+                padding: 1em;
+                margin: 1em 0;
+                border-radius: 5px;
+            }
+            
+            .verification-note {
+                background-color: #FFF9C4;
+                border-left: 4px solid #FFC107;
+                padding: 1em;
+                margin: 1em 0;
+            }
+            
+            /* Additional utility classes */
+            .constraint-explanation,
+            .nested-list {
+                margin-left: 1.5em;
+            }
+            
+            /* Table styling for data comparison */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1em 0;
+            }
+            caption {
+                font-weight: bold;
+                padding: 0.5em;
+                text-align: left;
+            }
+            th, td {
+                padding: 0.5em;
+                border: 1px solid #ccc;
+                text-align: left;
+            }
+            th {
+                background-color: #f0f0f0;
+            }
+            
+            .trade-offs,
+            .benefits {
+                background-color: #FFF3E0;
+                padding: 1em;
+                margin: 1em 0;
+                border-radius: 5px;
+            }
+            
+            .benefits {
+                background-color: #E8F5E9;
+            }
+            
+            .validation-points {
+                border-left: 3px solid #4CAF50;
+                padding-left: 1em;
+                margin: 1em 0;
+            }
+            
+            /* Enhanced keyboard navigation for details/summary */
+            details summary {
+                cursor: pointer;
+            }
+            
+            details summary:focus {
+                outline: 2px solid #4A90E2;
+                outline-offset: 2px;
+            }
+        </style>
+    </head> 
+    <body> 
+        <a href="#main-content" class="sr-only">Skip to main content</a>
+        
+        <main id="main-content"> 
+            <header>
+                <h1>Getting Familiar with SQL in Jupyter Notebooks</h1>
+                <div class="key-concept" aria-labelledby="intro-concept">
+                    <h2 id="intro-concept" class="sr-only">Introduction</h2>
+                    <p>Imagine being able to analyze thousands of records with just a few lines of code. That's exactly what data analysts do every day using SQL in Jupyter Notebooks. Today, we'll explore how a bookstore uses these tools to make smart business decisions. By the end of this tutorial, you'll be writing your first SQL queries with confidence.</p>
+                </div>
+            </header>
+
+            <section aria-labelledby="learning-objectives" class="step-section">
+                <h2 id="learning-objectives">Learning Objectives</h2>
+                <ul aria-label="Learning objectives list">
+                    <li>Connect to a SQL database in Jupyter Notebook</li>
+                    <li>Write and execute basic SELECT statements</li>
+                    <li>Explore real business data using SQL queries</li>
+                </ul>
+            </section>
+
+            <section aria-labelledby="workspace-intro" class="step-section">
+                <h2 id="workspace-intro">Workspace Introduction</h2>
+                <p>First, let's understand our workspace. Jupyter Notebook is like a digital playground where we can write code, see results instantly, and document our process. Each notebook is made up of code cells that can be run individually to show results one block at a time, as well as document our process.</p>
+
+                <p>In this course, we'll be using Python code to import SQLite and Pandas. These two tools will enable all of our SQL query magic to happen. SQLite is a sql package and Pandas is a powerful Python library for data manipulation and analysis. We'll get into the deeper details of python and pandas in Course 2, for this course any python code needed will be provided.</p>
+
+                <div class="interactive-prompt" role="group" aria-labelledby="run-prompt">
+                    <h3 id="run-prompt" class="sr-only">Run Prompt</h3>
+                    <p>Let's run our first cell. To run a cell you can click the Run Button in the tool bar, or press shift plus enter on your keyboard.</p>
+                </div>
+
+                <div role="region" aria-labelledby="first-code" class="code-example">
+                    <h3 id="first-code" class="code-label">[Code begins here]</h3>
+                    <pre><code aria-label="Database connection code">import sqlite3
+import pandas as pd
+conn = sqlite3.connect('bookcycle.db')
+cursor = conn.cursor()</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                
+                <div class="explanation" aria-labelledby="foundation-explanation">
+                    <h3 id="foundation-explanation" class="sr-only">Foundation Explanation</h3>
+                    <p>These first few lines are our foundation. Think of them as opening the door to our database. Let me break this down:</p>
+                    <ul aria-label="Code explanation points">
+                        <li>sqlite3 helps us talk to our database</li>
+                        <li>pandas is our tool for displaying data nicely</li>
+                        <li>The connect function is like dialing the phone number to our database</li>
+                        <li>And cursor? Think of it as our database messenger</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section aria-labelledby="first-query" class="step-section">
+                <h2 id="first-query">First Query Example</h2>
+                <div class="key-concept" aria-labelledby="query-concept">
+                    <h3 id="query-concept" class="sr-only">Query Concept</h3>
+                    <p>Now for the exciting part, your first query! Let's see what books we have in stock. Our query to determine this is Select asterisk from books limit 5.</p>
+                </div>
+
+                <div role="region" aria-labelledby="select-query" class="code-example">
+                    <h3 id="select-query" class="code-label">[Code begins here]</h3>
+                    <pre><code aria-label="Select all books query">SELECT *
+FROM books
+LIMIT 5;</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                
+                <div class="explanation" aria-labelledby="query-explanation">
+                    <h3 id="query-explanation" class="sr-only">Query Explanation</h3>
+                    <p>This query is like asking, 'Show me everything about the first 5 books.' In the real world, data analysts often start with a small sample to understand their data structure before diving deeper.</p>
+                </div>
+                
+                <div class="interactive-challenge" role="group" aria-labelledby="challenge-1">
+                    <h3 id="challenge-1" class="sr-only">Challenge</h3>
+                    <p>To view all rows of data from books, you can remove the LIMIT 5 text. To run this new query replace the "YOUR CODE HERE TEXT" in the code cell with our new query: SELECT asterisk FROM books. Feel free to pause your video while you type in the new text.</p>
+                </div>
+                
+                <div role="region" aria-labelledby="all-books-query" class="code-example">
+                    <h3 id="all-books-query" class="code-label">[Code begins here]</h3>
+                    <pre><code aria-label="Select all books without limit">SELECT *
+FROM books</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                
+                <p>What do you notice about the data that's returned? We now have all rows of data from the books table. Each row represents a book, and each column tells us something specific about that book.</p>
+                
+                <div class="key-concept" aria-labelledby="specific-columns-concept">
+                    <h3 id="specific-columns-concept" class="sr-only">Specific Columns</h3>
+                    <p>In real business scenarios, we often need specific information rather than all data. Let's say BookCycle's manager needs a quick inventory check focusing just on titles. Our new query is SELECT title FROM books</p>
+                </div>
+                
+                <div role="region" aria-labelledby="title-query" class="code-example">
+                    <h3 id="title-query" class="code-label">[Code begins here]</h3>
+                    <pre><code aria-label="Select only titles query">SELECT title
+FROM books;</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                
+                <div class="explanation" aria-labelledby="asterisk-explanation">
+                    <h3 id="asterisk-explanation" class="sr-only">Asterisk Explanation</h3>
+                    <p>Notice how we replaced the asterisk (*) with 'title'. This makes our query:</p>
+                    <ul aria-label="Query benefits">
+                        <li>More efficient by retrieving only what we need</li>
+                        <li>Easier to read and analyze</li>
+                        <li>More focused on our business question</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section aria-labelledby="advanced-queries" class="step-section">
+                <h2 id="advanced-queries">Advanced Query Examples</h2>
+                <p>Now, let's help BookCycle's staff with their inventory check. They need titles, authors, and prices.</p>
+                
+                <div role="region" aria-labelledby="multiple-columns" class="code-example">
+                    <h3 id="multiple-columns" class="code-label">[Code begins here]</h3>
+                    <pre><code aria-label="Multiple columns query">SELECT title, author, purchase_price
+FROM books;</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                
+                <div class="interactive-question" role="group" aria-labelledby="pre-run-question">
+                    <h3 id="pre-run-question">Before running this query, what information do you expect to see?</h3>
+                    <p>How might this help the bookstore staff?</p>
+                    <details>
+                        <summary role="button" aria-expanded="false">Think about it</summary>
+                        <div aria-live="polite">
+                            <p>As you may have expected, the output displays all data from the title, author and purchase price columns.</p>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="key-concept" aria-labelledby="where-concept">
+                    <h3 id="where-concept">Using WHERE Clause</h3>
+                    <p>Data analysis often requires finding specific information. This is a great opportunity to utilize the WHERE clause. The WHERE clause is our filter - think of it as your database's search function.</p>
+                </div>
+                
+                <div role="region" aria-labelledby="filtered-query" class="code-example">
+                    <h3 id="filtered-query" class="code-label">[Code begins here]</h3>
+                    <pre><code aria-label="Filtered query with WHERE clause">SELECT title, list_price
+FROM books
+WHERE list_price > 11;</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                
+                <div class="explanation" aria-labelledby="filter-explanation">
+                    <h3 id="filter-explanation" class="sr-only">Filter Explanation</h3>
+                    <p>This query helps BookCycle identify their premium inventory. In retail, this information is crucial for:</p>
+                    <ul aria-label="Retail applications">
+                        <li>Pricing strategies</li>
+                        <li>Security measures for high-value items</li>
+                        <li>Special display arrangements</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section aria-labelledby="common-mistakes" class="warning-note" role="alert">
+                <h2 id="common-mistakes">Common Mistakes</h2>
+                <ul aria-label="Common SQL mistakes">
+                    <li>Forgetting semicolons at the end of queries</li>
+                    <li>Using single quotes instead of double quotes for column names</li>
+                    <li>Incorrect spelling of column names</li>
+                </ul>
+            </section>
+            
+            <section aria-labelledby="interactive-example" class="operation-section">
+                <h2 id="interactive-example">Let's Practice</h2>
+                <div class="interactive-challenge" role="group" aria-labelledby="budget-challenge">
+                    <h3 id="budget-challenge" class="sr-only">Budget Challenge</h3>
+                    <p>Let's modify this query together. How would you find books less than $10 for a budget-friendly promotion?</p>
+                    <p>The query would read SELECT title and list_price FROM books WHERE the list_price less than 10.</p>
+                </div>
+                
+                <div role="region" aria-labelledby="budget-query" class="code-example">
+                    <h3 id="budget-query" class="code-label">[Code begins here]</h3>
+                    <pre><code aria-label="Budget books query">SELECT title, list_price
+FROM books
+WHERE list_price < 10;</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                
+                <div class="verification-section" aria-labelledby="budget-verification">
+                    <h3 id="budget-verification" class="sr-only">Verification</h3>
+                    <p>The output reveals all books in the inventory that are indeed less than ten dollars each.</p>
+                </div>
+            </section>
+            
+            <section aria-labelledby="conclusion" class="benefits">
+                <h2 id="conclusion">Conclusion</h2>
+                <p>We've successfully:</p>
+                <ul aria-label="Key accomplishments">
+                    <li>Set up our SQL environment</li>
+                    <li>Written basic queries</li>
+                    <li>Learned to select specific columns</li>
+                    <li>Applied filters to find exact data</li>
+                    <li>Connected these skills to real business needs</li>
+                </ul>
+                <p>Remember, every query you write makes you better at data analysis. Keep practicing!</p>
+            </section>
+        </main>
+        
+        <footer>
+            <div class="pro-tip" aria-labelledby="pro-tip-1">
+                <h3 id="pro-tip-1" class="sr-only">Pro Tip</h3>
+                <p>Pro tip: Try combining different WHERE conditions to answer more complex business questions!</p>
+            </div>
+        </footer>
+    </body> 
+</html>

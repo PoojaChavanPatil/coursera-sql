@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Design Lab</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>Database Design Lab</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <h2 id="introduction">Introduction</h2>
+            <p>Imagine you're tasked with building the backbone of a growing bookstore chain's data system. One wrong design decision could mean slow queries, data inconsistencies, or even lost sales. Today, we'll master database design principles that power real-world applications, using a practical example that could land on your desk tomorrow.</p>
+        </section>
+
+        <section aria-labelledby="learning-objectives">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>By the end of this hands-on session, you'll be able to:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Design and implement a relational database schema for real-world scenarios</li>
+                <li>Create tables with appropriate primary keys, foreign keys, and constraints</li>
+                <li>Implement indexes to improve query performance</li>
+                <li>Use SQL to define and modify database structures</li>
+            </ul>
+        </section>
+        
+        <section aria-labelledby="environment-setup">
+            <h2 id="environment-setup">Environment Setup</h2>
+            <p>Let's begin by setting up our development environment. We'll need two essential Python libraries: sqlite3 for database operations and pandas for data manipulation.</p>
+            
+            <div role="region" aria-labelledby="db-connection-code" class="code-example">
+                <h3 id="db-connection-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Database connection code">import sqlite3
+import pandas as pd
+
+# Connect to the BookCycle database
+conn = sqlite3.connect('bookcycle.db')
+cursor = conn.cursor()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="key-concept" aria-labelledby="connection-concept">
+                <h3 id="connection-concept">Connection Concept</h3>
+                <p>Let me explain what's happening here. The sqlite3.connect() function creates a new database if it doesn't exist, or opens an existing one. We're storing this connection in our 'conn' variable. The cursor object we create next will help us execute SQL commands.</p>
+            </div>
+            
+            <p>Next, we'll create a helper function that will make our lives easier when executing queries:</p>
+            
+            <div role="region" aria-labelledby="helper-function" class="code-example">
+                <h3 id="helper-function" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Helper function code"># Function to execute SQL queries and display results
+def execute_query(query):
+    df = pd.read_sql_query(query, conn)
+    display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>This function combines SQLite with pandas to execute our queries and display results in a clean, tabular format. This is particularly useful in a Jupyter notebook environment.</p>
+        </section>
+        
+        <section aria-labelledby="database-exploration">
+            <h2 id="database-exploration">Database Exploration</h2>
+            <p>Now, let's explore what tables exist in our database:</p>
+            
+            <div role="region" aria-labelledby="list-tables-query" class="code-example">
+                <h3 id="list-tables-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="List tables query">query = """
+SELECT name FROM sqlite_master WHERE type='table';
+"""
+execute_query(query)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>This query is querying SQLite's system table 'sqlite_master'. Think of it as the database's directory - it contains information about all objects in our database. By filtering where type='table', we're specifically looking for tables.</p>
+            
+            <p>Let's examine our books table structure:</p>
+            
+            <div role="region" aria-labelledby="table-structure-query" class="code-example">
+                <h3 id="table-structure-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Table structure query">query = """
+PRAGMA table_info(books);
+"""
+execute_query(query)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="key-concept" aria-labelledby="pragma-concept">
+                <h3 id="pragma-concept">Understanding PRAGMA Commands</h3>
+                <p>PRAGMA table_info is a SQLite-specific command that shows us the detailed structure of a table. For each column, we'll see:</p>
+                <ul aria-label="Column information details">
+                    <li>The column name</li>
+                    <li>The data type</li>
+                    <li>Whether it can contain NULL values</li>
+                    <li>Default values</li>
+                    <li>Whether it's part of the primary key</li>
+                </ul>
+                <p>This information is crucial for understanding what we're working with before making any modifications.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="creating-suppliers-table" class="design-step">
+            <h2 id="creating-suppliers-table">Creating the Suppliers Table</h2>
+            <p>Now that we understand our existing structure, let's create our suppliers table. This is a critical component of our database design.</p>
+            
+            <div role="region" aria-labelledby="create-suppliers" class="code-example">
+                <h3 id="create-suppliers" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Create suppliers table code">cursor.execute("""
+CREATE TABLE IF NOT EXISTS suppliers (
+    supplier_id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    contact_info TEXT,
+    address TEXT
+);
+""")
+conn.commit()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="key-concept" aria-labelledby="create-table-explanation">
+                <h3 id="create-table-explanation">Understanding the CREATE TABLE Statement</h3>
+                <p>Let's break down each component of this CREATE TABLE statement:</p>
+                <ul aria-label="Table components explanation">
+                    <li>IF NOT EXISTS: This is a safety clause that prevents errors if we try to create a table that already exists.</li>
+                    <li>supplier_id INTEGER PRIMARY KEY:
+                        <ul class="constraint-explanation">
+                            <li>INTEGER: The data type for whole numbers</li>
+                            <li>PRIMARY KEY: Makes this column unique and automatically incremented</li>
+                            <li>This will be our unique identifier for each supplier</li>
+                        </ul>
+                    </li>
+                    <li>name TEXT NOT NULL:
+                        <ul class="constraint-explanation">
+                            <li>TEXT: Can store strings of any length</li>
+                            <li>NOT NULL: Requires this field to have a value</li>
+                            <li>We make this required because every supplier must have a name</li>
+                        </ul>
+                    </li>
+                    <li>contact_info TEXT and address TEXT:
+                        <ul class="constraint-explanation">
+                            <li>These are optional fields (NULL allowed)</li>
+                            <li>Flexible text fields for storing various contact details</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="verification-section" aria-labelledby="verify-suppliers">
+                <h3 id="verify-suppliers">Verifying the Table Structure</h3>
+                <div role="region" aria-labelledby="verify-suppliers-code" class="code-example">
+                    <h4 id="verify-suppliers-code" class="code-label">[Code begins here]</h4>
+                    <pre><code aria-label="Verify suppliers table">query = """
+PRAGMA table_info(suppliers);
+"""
+execute_query(query)</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                
+                <p>This verification step is crucial in database development. Always verify your table structure after creation to ensure:</p>
+                <ul aria-label="Verification checklist">
+                    <li>All columns are present</li>
+                    <li>Data types are correct</li>
+                    <li>Constraints are properly set</li>
+                </ul>
+            </div>
+            
+            <p>In a real-world scenario, this suppliers table would be the foundation for:</p>
+            <ul aria-label="Real-world applications">
+                <li>Managing vendor relationships</li>
+                <li>Tracking book sourcing</li>
+                <li>Supporting procurement processes</li>
+                <li>Enabling supply chain analytics</li>
+            </ul>
+        </section>
+        
+        <section aria-labelledby="adding-relationships" class="design-step">
+            <h2 id="adding-relationships">Adding Foreign Key Constraints</h2>
+            <p>Now we're moving into one of the most critical aspects of database design: establishing relationships between tables. We'll connect our books table to our new suppliers table.</p>
+            
+            <p>First, let's examine the current books table structure:</p>
+            <div role="region" aria-labelledby="examine-books" class="code-example">
+                <h3 id="examine-books" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Examine books table structure">query = """
+PRAGMA table_info(books);
+"""
+execute_query(query)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+
+            <p>Next, let's add the necessary column to our books table:</p>
+            <div role="region" aria-labelledby="add-column" class="code-example">
+                <h3 id="add-column" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Add column to books table">cursor.execute("""
+ALTER TABLE books ADD COLUMN supplier_id INTEGER;
+""")
+conn.commit()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="key-concept" aria-labelledby="foreign-key-concept">
+                <h3 id="foreign-key-concept">Foreign Key Implementation</h3>
+                <p>This ALTER TABLE command adds a new column that will store our supplier references. However, just adding the column isn't enough - we need to establish the relationship formally through a foreign key constraint.</p>
+                <p>In SQLite, adding a foreign key requires us to recreate the table. This is a multi-step process:</p>
+            </div>
+            
+            <div role="region" aria-labelledby="foreign-key-process" class="code-example">
+                <h3 id="foreign-key-process" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Add foreign key constraint">First, we create a temporary table with existing data:
+cursor.execute("CREATE TABLE books_temp AS SELECT * FROM books");
+Next, we drop the original table
+cursor.execute("DROP TABLE books");
+Then we create a new table with a foreign key constraint. This foreign key references the supplier ID column in the Suppliers table that is an identical column between the two tables.
+cursor.execute("""
+CREATE TABLE books (
+    book_id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL,
+    isbn INTEGER,
+    genre TEXT,
+    condition TEXT,
+    purchase_price REAL,
+    list_price REAL,
+    date_acquired DATE,
+    current_location TEXT,
+    quantity INTEGER,
+    supplier_id INTEGER,
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(supplier_id)
+)
+""")
+
+With our new table and foreign key constraint in place we then copy the data back over form our temporary table.
+cursor.execute("INSERT INTO books SELECT * FROM books_temp")
+
+Finally, We delete the temporary table since its no longer needed.
+cursor.execute("DROP TABLE books_temp")
+conn.commit()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="key-concept" aria-labelledby="constraints-explanation">
+                <h3 id="constraints-explanation">Understanding Constraints</h3>
+                <p>Let's break down why each of these constraints matters:</p>
+                <ul aria-label="Constraints explanation">
+                    <li>PRIMARY KEY on book_id ensures each book has a unique identifier</li>
+                    <li>NOT NULL on title and author ensures essential information is always present</li>
+                    <li>UNIQUE on ISBN prevents duplicate book entries</li>
+                    <li>The FOREIGN KEY constraint ensures every supplier_id in the books table exists in the suppliers table</li>
+                </ul>
+                <p>This is crucial for data integrity. Without these constraints, you could end up with:</p>
+                <ul aria-label="Data integrity issues">
+                    <li>Books linked to non-existent suppliers</li>
+                    <li>Duplicate ISBNs causing inventory issues</li>
+                    <li>Books without essential information</li>
+                </ul>
+            </div>
+            
+            <div class="verification-section" aria-labelledby="verify-modified-table">
+                <h3 id="verify-modified-table">Verifying the Modified Table</h3>
+                <div role="region" aria-labelledby="verify-books-code" class="code-example">
+                    <h4 id="verify-books-code" class="code-label">[Code begins here]</h4>
+                    <pre><code aria-label="Verify modified books table">query = """
+PRAGMA table_info(books);
+"""
+execute_query(query)</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+            </div>
+        </section>
+        
+        <section aria-labelledby="creating-indexes" class="design-step">
+            <h2 id="creating-indexes">Creating Indexes for Performance</h2>
+            <p>Now in real-world applications, performance is crucial. Indexes are like the index in a book - they help us find information quickly without scanning every page.</p>
+            
+            <p>Let's create an index for the ISBN field:</p>
+            <div role="region" aria-labelledby="create-isbn-index" class="code-example">
+                <h3 id="create-isbn-index" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Create ISBN index">cursor.execute("""
+CREATE INDEX idx_books_isbn ON books(isbn);
+""")
+conn.commit()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>This index will significantly speed up searches by ISBN, which is a common operation in a bookstore system.</p>
+            
+            <p>Now, let's create a compound index for author and title searches. A compound index has multiple columns and is particularly useful when you frequently search for combinations of columns. For example, finding all books by a specific author with a specific title:</p>
+            
+            <div role="region" aria-labelledby="create-compound-index" class="code-example">
+                <h3 id="create-compound-index" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Create compound index">cursor.execute("""
+CREATE INDEX idx_books_author_title ON books(author, title);
+""")
+conn.commit()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+
+            <div class="verification-section" aria-labelledby="verify-indexes">
+                <h3 id="verify-indexes">Verifying Our Indexes</h3>
+                <div role="region" aria-labelledby="verify-indexes-code" class="code-example">
+                    <h4 id="verify-indexes-code" class="code-label">[Code begins here]</h4>
+                    <pre><code aria-label="Verify indexes">query = """
+SELECT name FROM sqlite_master 
+WHERE type='index' AND tbl_name='books';
+"""
+execute_query(query)</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+            </div>
+            
+            <div class="trade-offs" aria-labelledby="index-trade-offs">
+                <h3 id="index-trade-offs">Understanding Index Trade-offs</h3>
+                <p>Remember, while indexes improve query performance, they come with trade-offs:</p>
+                <ul aria-label="Index trade-offs">
+                    <li>They take up storage space</li>
+                    <li>They slow down INSERT and UPDATE operations</li>
+                    <li>They need to be maintained</li>
+                </ul>
+                <p>Choose indexes based on your most common query patterns.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="creating-wishlists" class="design-step">
+            <h2 id="creating-wishlists">Creating a Many-to-Many Relationship</h2>
+            <p>Our final task is creating a wishlists table that connects customers with books they're interested in. This is a perfect example of a many-to-many relationship in database design.</p>
+            
+            <div role="region" aria-labelledby="create-wishlists" class="code-example">
+                <h3 id="create-wishlists" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Create wishlists table">cursor.execute("""
+CREATE TABLE IF NOT EXISTS wishlists (
+    wishlist_id INTEGER PRIMARY KEY,
+    customer_id INTEGER,
+    book_id INTEGER,
+    date_added DATE,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (book_id) REFERENCES books(book_id)
+);
+""")
+conn.commit()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="key-concept" aria-labelledby="wishlist-design">
+                <h3 id="wishlist-design">Analyzing the Wishlist Table Design</h3>
+                <p>Let's analyze this table design:</p>
+                <ul aria-label="Wishlist table components">
+                    <li>wishlist_id: Unique identifier for each wishlist entry</li>
+                    <li>customer_id and book_id: Foreign keys linking to customers and books</li>
+                    <li>date_added: Helps track when items were added to wishlists</li>
+                </ul>
+                <p>The foreign key constraints ensure:</p>
+                <ul aria-label="Foreign key benefits">
+                    <li>We can't add wishes for non-existent books</li>
+                    <li>We can't create wishes for non-existent customers</li>
+                </ul>
+            </div>
+            
+            <div class="verification-section" aria-labelledby="verify-wishlists">
+                <h3 id="verify-wishlists">Verifying the Wishlists Table</h3>
+                <div role="region" aria-labelledby="verify-wishlists-code" class="code-example">
+                    <h4 id="verify-wishlists-code" class="code-label">[Code begins here]</h4>
+                    <pre><code aria-label="Verify wishlists table">query = """
+PRAGMA table_info(wishlists);
+"""
+execute_query(query)</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+            </div>
+        </section>
+        
+        <section aria-labelledby="conclusion">
+            <h2 id="conclusion">Conclusion</h2>
+            <p>These database design principles and practices are essential skills for any data professional. They ensure your applications are not just functional, but also efficient and maintainable.</p>
+            
+            <p>Let's review what we've accomplished:</p>
+            <ul aria-label="Summary of accomplishments">
+                <li>Created a robust database schema</li>
+                <li>Implemented data integrity constraints</li>
+                <li>Optimized query performance with indexes</li>
+                <li>Built relationships between tables</li>
+            </ul>
+            <p>These skills form the foundation of any data-driven application you'll work on.</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>

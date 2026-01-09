@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Practice</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>Join Practice</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <h2 id="introduction">Introduction</h2>
+            <p>Welcome aboard, data explorers! Have you ever thought about how companies like Spotify or Airbnb combine data from different sources to understand their users better? This video discusses SQL JOINs - the secret sauce behind integrating diverse data sets. By the end of this video, you'll be combining tables like a pro, unlocking insights that can drive real business decisions.</p>
+        </section>
+
+        <section aria-labelledby="learning-objectives">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>In this screencast, you'll learn how to:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Implement INNER JOIN to combine data from two related tables</li>
+                <li>Use LEFT JOIN to include all records from one table and matching records from another</li>
+                <li>Write multi-table joins to answer complex business questions</li>
+                <li>Apply joins to real-world scenarios in a book retail context</li>
+            </ul>
+            <p>This video demonstrates the concepts you'll apply in the 'Join Practice' lab. Feel free to refer back to or play the video alongside the lab for additional guidance as you complete the exercises.</p>
+        </section>
+        
+        <section aria-labelledby="inner-join">
+            <h2 id="inner-join">Understanding INNER JOIN</h2>
+            <p>Let's start with INNER JOIN. Let's say you're working for BookCycle, and management wants to analyze customer purchases.</p>
+            <p>First, we'll connect to our database:</p>
+            
+            <div role="region" aria-labelledby="database-connection" class="code-example">
+                <h3 id="database-connection" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Database connection code">import sqlite3
+import pandas as pd
+
+conn = sqlite3.connect('bookcycle.db')</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>Now, let's write our first INNER JOIN query:</p>
+            
+            <div role="region" aria-labelledby="inner-join-example" class="code-example">
+                <h3 id="inner-join-example" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Inner join query example">query = """
+SELECT c.customer_id, c.join_date, t.transaction_id, t.date_time, t.sale_price
+FROM customers c
+INNER JOIN transactions t ON c.customer_id = t.customer_id
+LIMIT 5;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="table-aliases">
+                <h3 id="table-aliases">Understanding Table Aliases</h3>
+                <p>Before jumping into the join portion of this query, let me explain what 'c.' and 't.' are doing here. These are called table aliases - they're basically nicknames we give to our tables to make the query shorter and easier to read.</p>
+                
+                <p>In this case, 'c' is a shorthand for the 'customers' table, and 't' is shorthand for the 'transactions' table. So when you see 'c.customer_id', it's saying 'get the customer_id column from the customers table', and when you see 't.transaction_id', it means 'get the transaction_id from the transactions table'. These aliases are declared right after each table name in the FROM and JOIN clauses by saying FROM customers c and INNER JOIN transactions t.</p>
+                
+                <p>Using these aliases is especially helpful when you're joining tables because it makes it crystal clear which table each column is coming from. For example, both tables might have a 'date' column, so using 'c.date' or 't.date' helps avoid any ambiguity.</p>
+                
+                <p>Without aliases, we'd have to write out the full table names each time, like this:
+                SELECT customers.customer_id, customers.join_date, transactions.transaction_id...
+                which gets pretty lengthy and harder to read.</p>
+            </div>
+
+            <div class="key-concept" aria-labelledby="inner-join-concept">
+                <h3 id="inner-join-concept">How INNER JOIN Works</h3>
+                <p>Now let's talk about the join part of this query. When our query states INNER JOIN ON c.customer_id = t.customer_id. We are saying we want to combine these two tables on their like column which in this case is customer id. Think of a join as zippering two tables together along a column they both share that is alike. With these two like columns, we can combine data from the customers and transactions tables. The ON clause specifies which column to use for the combination and how to match rows between the tables. We're only getting rows where there's a match in both tables.</p>
+            </div>
+            
+            <div class="interactive-question" role="group" aria-labelledby="no-purchases-question">
+                <h3 id="no-purchases-question">Question</h3>
+                <p>What do you think would happen if a customer hasn't made any purchases yet?</p>
+                <details>
+                    <summary role="button" aria-expanded="false">Show answer</summary>
+                    <div aria-live="polite">
+                        <p>That's right - they wouldn't appear in this result at all. INNER JOIN only returns matches.</p>
+                    </div>
+                </details>
+            </div>
+            
+            <div class="interactive-question" role="group" aria-labelledby="modify-inner-join">
+                <h3 id="modify-inner-join">Your Turn!</h3>
+                <p>Try modifying the query to include the customer's preferred store.</p>
+            </div>
+            
+            <p>Here's how you could do it:</p>
+            
+            <div role="region" aria-labelledby="modified-inner-join" class="code-example">
+                <h3 id="modified-inner-join" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Modified inner join query">query = """
+SELECT c.customer_id, c.join_date, c.preferred_store, t.transaction_id, t.date_time, t.sale_price
+FROM customers c
+INNER JOIN transactions t ON c.customer_id = t.customer_id
+LIMIT 5;
+"""</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>We simply added c.preferred_store to the SELECT statement.</p>
+        </section>
+        
+        <section aria-labelledby="left-join">
+            <h2 id="left-join">Exploring LEFT JOIN</h2>
+            <p>Now, let's explore LEFT JOIN. BookCycle wants to identify customers who haven't made any purchases yet.</p>
+            
+            <p>Here's an example:</p>
+            
+            <div role="region" aria-labelledby="left-join-example" class="code-example">
+                <h3 id="left-join-example" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Left join example">query = """
+SELECT c.customer_id, c.join_date, t.transaction_id
+FROM customers c
+LEFT JOIN transactions t ON c.customer_id = t.customer_id
+LIMIT 10;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="key-concept" aria-labelledby="left-join-concept">
+                <h3 id="left-join-concept" class="sr-only">LEFT JOIN Explained</h3>
+                <p>LEFT JOIN returns all rows from the left table (customers) and matching rows from the right table (transactions). If there's no match, you'll see NULL values. Those null values will show up as "None" in your jupyter notebook output in this lab.</p>
+            </div>
+            
+            <div class="interactive-question" role="group" aria-labelledby="no-transactions-question">
+                <h3 id="no-transactions-question">Question</h3>
+                <p>How could we modify this query to show only customers with no transactions?</p>
+            </div>
+            
+            <p>Let's try it:</p>
+            
+            <div role="region" aria-labelledby="filter-null-values" class="code-example">
+                <h3 id="filter-null-values" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Filtering for null values in left join">query = """
+SELECT c.customer_id, c.join_date
+FROM customers c
+LEFT JOIN transactions t ON c.customer_id = t.customer_id
+WHERE t.transaction_id IS NULL;
+"""</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>We added a WHERE clause to filter for NULL transaction_id values. This gives us only the customers who haven't made any purchases.</p>
+        </section>
+        
+        <section aria-labelledby="multi-table-joins">
+            <h2 id="multi-table-joins">Multi-table Joins</h2>
+            <p>Finally, let's tackle a more complex scenario. BookCycle wants to analyze which books are popular in different store locations.</p>
+            
+            <p>Here's a query joining three tables:</p>
+            
+            <div role="region" aria-labelledby="three-table-join" class="code-example">
+                <h3 id="three-table-join" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Three table join example">query = """
+SELECT t.store_location, b.title, COUNT(*) as purchase_count
+FROM customers c
+JOIN transactions t ON c.customer_id = t.customer_id
+JOIN books b ON t.book_id = b.book_id
+GROUP BY t.store_location, b.title
+LIMIT 5;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>This query combines data from customers, transactions, and books tables. We're also counting purchases for each book in each store location. Notice we have two join clauses - the first Join combines customers with transactions on the customer id column, the second combines transactions with books on the book id column, effectively creating 1 large table combined of all three initial tables.</p>
+            
+            <p>Now, let's find the most popular book for each store location:</p>
+            
+            <div role="region" aria-labelledby="complex-subquery" class="code-example">
+                <h3 id="complex-subquery" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Complex query with subqueries">query = 
+"""SELECT rb.store_location, rb.title, rb.purchase_count
+FROM (
+    SELECT 
+        t.store_location, 
+        b.title, 
+        COUNT(*) AS purchase_count
+    FROM customers c
+    JOIN transactions t ON c.customer_id = t.customer_id
+    JOIN books b ON t.book_id = b.book_id
+    GROUP BY t.store_location, b.title
+) AS rb
+WHERE rb.purchase_count = (
+    -- Get the max purchase count for each store_location
+    SELECT MAX(sub.purchase_count)
+    FROM (
+        SELECT 
+            t2.store_location, 
+            b2.title, 
+            COUNT(*) AS purchase_count
+        FROM customers c2
+        JOIN transactions t2 ON c2.customer_id = t2.customer_id
+        JOIN books b2 ON t2.book_id = b2.book_id
+        GROUP BY t2.store_location, b2.title
+    ) AS sub
+    WHERE sub.store_location = rb.store_location
+)
+ORDER BY rb.store_location, rb.title;
+"""</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+
+            <div class="explanation" aria-labelledby="subquery-explanation">
+                <h3 id="subquery-explanation">Understanding the Complex Query</h3>
+                <p>Let me break down this query in simple terms. We're trying to find the most popular book at each store location.</p>
+                
+                <p>The query works in layers and uses something called a subquery (don't worry - we'll cover subqueries in detail in a later lesson!). For now, here's what the query is doing:</p>
+                <ol aria-label="Query breakdown steps">
+                    <li>First, we're counting book purchases by combining data from three tables: customers, transactions, and books. We group these counts by store location and book title.</li>
+                    <li>Then, for each store location, we're comparing these counts to find the highest number of purchases.</li>
+                    <li>Finally, we're only keeping the records where the purchase count matches the maximum for that store - in other words, the bestselling books.</li>
+                </ol>
+                
+                <p>The final output shows us each store's bestselling book(s) and how many times it was purchased, organized by store location and title.</p>
+            </div>
+            
+            <p>This is complex query, so take your time analyzing it to thoroughly understand how it renders the associated output.</p>
+            
+            <div class="benefits" aria-labelledby="join-benefits">
+                <h3 id="join-benefits">Benefits of JOINs</h3>
+                <p>Great job! You've learned how to use INNER JOIN to combine related data, LEFT JOIN to include all records from one table, and multi-table joins for complex analyses. These skills are crucial for integrating data from different sources in real-world scenarios.</p>
+                
+                <p>Remember, practice makes perfect. Try writing your own queries, experiment with different join types, and don't be afraid to tackle complex multi-table joins. With these skills, you're well on your way to becoming a data integration expert!</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>

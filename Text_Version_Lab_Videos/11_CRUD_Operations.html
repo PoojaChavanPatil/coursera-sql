@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Operations Lab</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>CRUD Operations</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <h2 id="introduction">Introduction</h2>
+            <p>Join me as we uncover the power of data manipulation – a critical skill for any data scientist or analyst. Consider a scenario where you're managing a bookstore's database, and you need to update inventory, add new sales, or remove outdated records. That's exactly what we'll be doing with BookCycle's transaction data. In this video, we'll explore how to safely perform these types of data manipulation operations, also called CRUD operations or Create, Read, Update, and Delete.</p>
+        </section>
+
+        <section aria-labelledby="learning-objectives">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>By the end of this screencast, you'll be able to:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Execute INSERT operations to add new transaction records</li>
+                <li>Perform UPDATE operations to modify existing data</li>
+                <li>Use DELETE operations to remove specific records</li>
+                <li>Understand why transaction control is crucial for data integrity</li>
+            </ul>
+            <p>Let's get started!</p>
+        </section>
+        
+        <section aria-labelledby="environment-setup">
+            <h2 id="environment-setup">Environment Setup</h2>
+            <p>First, let's set up our environment. We'll be using Python with SQLite to manipulate our BookCycle transactions database.</p>
+            
+            <div role="region" aria-labelledby="setup-code" class="code-example">
+                <h3 id="setup-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Environment setup code">import pandas as pd
+import sqlite3
+
+# Load the CSV file
+df = pd.read_csv('transactions.csv')
+
+# Create a temporary SQLite database and load the data
+conn = sqlite3.connect(':memory:')
+df.to_sql('transactions', conn, index=False)
+
+# Create a cursor object
+cursor = conn.cursor()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>This code imports our necessary libraries, loads our transaction data, and sets up a temporary SQLite database. In real-world scenarios, you'd typically connect to an existing database, but this approach allows us to practice safely.</p>
+        </section>
+        
+        <section aria-labelledby="read-operation">
+            <h2 id="read-operation">READ Operation</h2>
+            <p>Now, let's verify our data:</p>
+            
+            <div role="region" aria-labelledby="read-operation-code" class="code-example">
+                <h3 id="read-operation-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="READ operation example">query = "SELECT * FROM transactions LIMIT 5;"
+result = pd.read_sql_query(query, conn)
+print(result)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>Always check your data after loading it. This helps catch any issues early and ensures you're working with the expected information.</p>
+        </section>
+        
+        <section aria-labelledby="create-operation" class="operation-section">
+            <h2 id="create-operation">CREATE Operation (INSERT)</h2>
+            <p>Next, let's add a new transaction using an INSERT operation:</p>
+            
+            <div role="region" aria-labelledby="insert-operation" class="code-example">
+                <h3 id="insert-operation" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="INSERT operation example">insert_query = """
+INSERT INTO transactions 
+(transaction_id, date_time, store_location, customer_id, book_id, sale_price, payment_method, is_online)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+"""
+
+new_transaction = ('T1101', '2023-02-01 10:00:00', 'University', 'C1090', 'B1100', 14.99, 'credit', 0)
+
+cursor.execute(insert_query, new_transaction)
+conn.commit()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="parameterized-queries">
+                <h3 id="parameterized-queries">Using Parameterized Queries</h3>
+                <p>Notice how we use parameterized queries with question marks. This practice helps prevent SQL injection attacks, a common security concern in database management.</p>
+                
+                <p>In SQL, when you run a query that modifies the database (like an INSERT, UPDATE, or DELETE), the changes are first made in memory and not yet saved. This gives you a chance to review and possibly undo them before they are finalized.</p>
+                
+                <p>The conn.commit() function is used to finalize the transaction, saving all changes made during that transaction to the database. Once you call commit(), the changes are permanent and cannot be undone unless you use a rollback strategy.</p>
+            </div>
+            
+            <div class="verification" aria-labelledby="verify-insertion">
+                <h3 id="verify-insertion">Verifying Our Insertion</h3>
+                <div role="region" aria-labelledby="verify-insertion-code" class="code-example">
+                    <h4 id="verify-insertion-code" class="code-label">[Code begins here]</h4>
+                    <pre><code aria-label="Verify insertion code">verify_query = "SELECT * FROM transactions WHERE transaction_id = 'T1101';"
+result = pd.read_sql_query(verify_query, conn)
+print(result)</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+            </div>
+        </section>
+        
+        <section aria-labelledby="update-operation" class="operation-section">
+            <h2 id="update-operation">UPDATE Operation</h2>
+            <p>Now, let's say a customer wants to change their payment method. We can use an UPDATE operation for this:</p>
+            
+            <div role="region" aria-labelledby="update-operation-code" class="code-example">
+                <h3 id="update-operation-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="UPDATE operation example">update_query = """
+UPDATE transactions
+SET payment_method = ?
+WHERE transaction_id = ?;
+"""
+
+cursor.execute(update_query, ('debit', 'T1101'))
+conn.commit()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="verification" aria-labelledby="verify-update">
+                <h3 id="verify-update">Verifying Our Update</h3>
+                <div role="region" aria-labelledby="verify-update-code" class="code-example">
+                    <h4 id="verify-update-code" class="code-label">[Code begins here]</h4>
+                    <pre><code aria-label="Verify update code">verify_query = "SELECT * FROM transactions WHERE transaction_id = 'T1101';"
+
+result = pd.read_sql_query(verify_query, conn)
+display(result)</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+            </div>
+            
+            <p>Again, we use parameterized queries for safety. The WHERE clause is crucial here – without it, we might accidentally update every record!</p>
+        </section>
+        
+        <section aria-labelledby="delete-operation" class="operation-section">
+            <h2 id="delete-operation">DELETE Operation</h2>
+            <p>Finally, let's remove a cancelled transaction using a DELETE operation:</p>
+            
+            <div role="region" aria-labelledby="delete-operation-code" class="code-example">
+                <h3 id="delete-operation-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="DELETE operation example">delete_query = "DELETE FROM transactions WHERE transaction_id = ?;"
+cursor.execute(delete_query, ('T1101',))
+conn.commit()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+
+            <div class="warning-note" role="alert" aria-labelledby="delete-warning">
+                <h3 id="delete-warning">Important Warning</h3>
+                <p>Be extra careful with DELETE operations. Always double-check your WHERE clause to avoid accidentally deleting the wrong data.</p>
+            </div>
+            
+            <div class="verification" aria-labelledby="verify-deletion">
+                <h3 id="verify-deletion">Verifying Our Deletion</h3>
+                <div role="region" aria-labelledby="verify-deletion-code" class="code-example">
+                    <h4 id="verify-deletion-code" class="code-label">[Code begins here]</h4>
+                    <pre><code aria-label="Verify deletion code">verify_query = "SELECT * FROM transactions WHERE transaction_id = 'T1101';"
+
+# Resulting output should show only the header row and no data, confirming deletion.
+result = pd.read_sql_query(verify_query, conn)
+display(result)</code></pre>
+                    <span class="code-label">[Code ends here]</span>
+                </div>
+                <p>The resulting output of this query should show only the header row with no data, this confirms we have successfully deleted the data in question.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="conclusion">
+            <h2 id="conclusion">Conclusion</h2>
+            <p>These CRUD operations form the foundation of data manipulation in any database system. In real-world scenarios, you might be updating inventory levels, modifying customer information, or removing outdated records.</p>
+            
+            <p>Remember, data integrity is paramount. Each operation we performed was followed by a commit statement, ensuring our changes were saved. In larger systems, you might use transactions to group related operations, allowing you to rollback if any part of the process fails.</p>
+            
+            <p>Always validate your data after operations. This helps catch errors early and ensures your database remains accurate and reliable.</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>

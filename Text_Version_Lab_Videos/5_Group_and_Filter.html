@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group and Filter</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>Group and Filter</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <h2 id="introduction">Introduction</h2>
+            <p>Picture yourself as a data analyst at BookCycle, a chain of bookstores. Management wants to understand sales patterns across their multiple locations. How would you summarize thousands of transactions quickly and effectively? That's where SQL's GROUP BY and HAVING clauses come in handy.</p>
+        </section>
+
+        <section aria-labelledby="learning-objectives">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>By the end of this video, you'll be able to:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Use GROUP BY clauses to summarize data based on specific criteria</li>
+                <li>Apply aggregate functions like COUNT, SUM, and AVG with GROUP BY</li>
+                <li>Implement HAVING clauses to filter groups based on aggregate conditions</li>
+                <li>Write complex queries that combine GROUP BY and HAVING to extract meaningful insights</li>
+            </ul>
+            <p>Let's get started!</p>
+        </section>
+        
+        <section aria-labelledby="basic-grouping">
+            <h2 id="basic-grouping">Basic Grouping</h2>
+            <p>First, let's run the first cell to set up our environment and connect to the BookCycle database.</p>
+            <p>Now, let's count the number of transactions for each store location.</p>
+            
+            <div role="region" aria-labelledby="basic-group-by" class="code-example">
+                <h3 id="basic-group-by" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Basic GROUP BY example">SELECT store_location, COUNT(*) as transaction_count
+FROM transactions
+GROUP BY store_location;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="group-by-explanation">
+                <h3 id="group-by-explanation">Understanding GROUP BY</h3>
+                <p>Here's what's happening: We're selecting the store_location column and counting all rows for each unique location. The GROUP BY clause tells SQL to group rows with the same store_location together.</p>
+                <p>This query answers a crucial business question: Which store is handling the most transactions? This insight could help management allocate resources more effectively.</p>
+            </div>
+            
+            <div class="interactive-challenge" role="group" aria-labelledby="payment-challenge">
+                <h3 id="payment-challenge">Practice Challenge</h3>
+                <p>Now, it's your turn! Try writing a query to find the total sales for each payment method.</p>
+            </div>
+            
+            <p>Here's one way to do it:</p>
+
+            <div role="region" aria-labelledby="payment-sales-code" class="code-example">
+                <h3 id="payment-sales-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Total sales by payment method example">SELECT payment_method, SUM(sale_price) as total_sales
+FROM transactions
+GROUP BY payment_method;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>Great job! This query helps us understand which payment methods are most popular, guiding decisions on payment system investments.</p>
+        </section>
+        
+        <section aria-labelledby="multiple-aggregates">
+            <h2 id="multiple-aggregates">Multiple Aggregate Functions</h2>
+            <p>Often, we need multiple metrics for each group. Let's calculate total sales, average sale price, and transaction count for each store:</p>
+            
+            <div role="region" aria-labelledby="multiple-aggregates-code" class="code-example">
+                <h3 id="multiple-aggregates-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Multiple aggregate functions example">SELECT 
+    store_location,
+    SUM(sale_price) as total_sales,
+    AVG(sale_price) as avg_sale_price,
+    COUNT(*) as transaction_count
+FROM transactions
+GROUP BY store_location;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="multi-agg-explanation">
+                <h3 id="multi-agg-explanation">Understanding Multiple Aggregates</h3>
+                <p>We're using three aggregate functions here: SUM, AVG, and COUNT. This single query provides a comprehensive overview of each store's performance.</p>
+                <p>In real-world analysis, this could help identify stores that might be struggling with sales volume or average transaction value.</p>
+            </div>
+            
+            <div class="interactive-challenge" role="group" aria-labelledby="min-max-challenge">
+                <h3 id="min-max-challenge">Your Challenge</h3>
+                <p>Your turn again! Write a query to find the minimum, maximum, and average sale price for each payment method. Pause and try it out!</p>
+            </div>
+            
+            <p>Here's a possible solution:</p>
+
+            <div role="region" aria-labelledby="min-max-avg-code" class="code-example">
+                <h3 id="min-max-avg-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Min, max, avg price by payment method">SELECT payment_method,
+MIN(sale_price) AS min_sale_price,  
+MAX(sale_price) AS max_sale_price,  
+AVG(sale_price) AS avg_sale_price  
+FROM transactions  
+GROUP BY payment_method;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>Excellent! This query could help identify any pricing anomalies or trends across different payment methods.</p>
+        </section>
+        
+        <section aria-labelledby="having-clause">
+            <h2 id="having-clause">Filtering Groups with HAVING</h2>
+            <p>Sometimes we need to filter our groups based on aggregate values. That's where the HAVING clause comes in. Let's find store locations with more than 10 transactions. Our query reads:</p>
+            
+            <div role="region" aria-labelledby="having-clause-code" class="code-example">
+                <h3 id="having-clause-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="HAVING clause example">SELECT 
+    store_location,
+    COUNT(*) as transaction_count
+FROM transactions
+GROUP BY store_location
+HAVING transaction_count > 10;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="having-explanation">
+                <h3 id="having-explanation">Understanding HAVING</h3>
+                <p>The HAVING clause filters groups after they're formed, unlike WHERE which filters individual rows before grouping. This is crucial when we need to filter based on aggregate results.</p>
+                <p>In a business context, this could help identify high-volume stores that might need additional staff or resources.</p>
+            </div>
+            
+            <div class="interactive-challenge" role="group" aria-labelledby="avg-price-challenge">
+                <h3 id="avg-price-challenge">Final Challenge</h3>
+                <p>One last challenge! Write a query to find payment methods with an average sale price greater than $10. Give it a try!</p>
+            </div>
+            
+            <p>Here's one way to solve it:</p>
+
+            <div role="region" aria-labelledby="payment-avg-code" class="code-example">
+                <h3 id="payment-avg-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Payment methods with high average prices">SELECT payment_method,  
+AVG(sale_price) AS avg_sale_price  
+FROM transactions  
+GROUP BY payment_method 
+HAVING AVG(sale_price) > 10;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>Great work! This query could help identify premium payment methods, informing strategies to encourage their use.</p>
+        </section>
+        
+        <section aria-labelledby="conclusion">
+            <h2 id="conclusion">Conclusion</h2>
+            <p>Let's recap what we've learned:</p>
+            <ul aria-label="Summary of key concepts">
+                <li>GROUP BY summarizes data based on specified columns</li>
+                <li>We can use multiple aggregate functions with GROUP BY for comprehensive insights</li>
+                <li>HAVING filters groups based on aggregate conditions</li>
+                <li>These powerful SQL tools allow you to extract meaningful insights from large datasets, crucial for data-driven decision making in any business.</li>
+            </ul>
+            <p>Next, try applying these concepts to your own datasets or explore more complex grouping scenarios. Happy querying!</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>

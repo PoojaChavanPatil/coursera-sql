@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initializing a SQL Project with Git</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>Initializing a SQL Project with Git</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <h2 id="introduction">Introduction</h2>
+            <p>Hey data enthusiasts! Ever lost track of your SQL query versions or wished you could go back to a previous version of your code? In this video, we'll explore a game-changing tool for data analysts - Git version control for SQL projects. Just like how Google Docs tracks changes in documents, Git helps us manage our SQL code professionally. Let's learn how to never lose our query history again!</p>
+        </section>
+        
+        <section aria-labelledby="learning-objectives">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>In this hands-on session, we'll:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Set up a Git repository for SQL projects</li>
+                <li>Learn how to track changes in our queries</li>
+                <li>Write professional commit messages</li>
+                <li>And implement version control best practices that real data teams use every day</li>
+                <li>Whether you're working solo or in a team, these skills are essential for modern data analysis.</li>
+            </ul>
+        </section>
+        
+        <section aria-labelledby="setting-up-git">
+            <h2 id="setting-up-git">Setting Up Git</h2>
+            <p>Let's start by making sure Git is ready to use. First, we'll check our Git version by running the git version command. The output shows your installed version of git.</p>
+            
+            <div role="region" aria-labelledby="git-version-check" class="code-example">
+                <h3 id="git-version-check" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Git version check command">!git --version</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>Next, let's set up our Git configuration. If you're setting up Git for the first time, you'll need to tell Git who you are. This is crucial because in real teams, everyone needs to know who made which changes. Let's set that up:</p>
+            <p>Replace your name and email with the current text in the code block. These first two lines will set your name and email for Git. The third line will output a list of your current configuration. The output after running these lines should show your name and email address.</p>
+
+            <div role="region" aria-labelledby="git-config" class="code-example">
+                <h3 id="git-config" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Git configuration commands">!git config --global user.name "Your Name"
+!git config --global user.email "your.email@example.com"
+!git config --list</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="pro-tip" role="note" aria-labelledby="email-tip">
+                <h3 id="email-tip">Pro Tip</h3>
+                <p><strong>💡 Pro tip:</strong> In actual work environments, make sure to use your professional email address!</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="creating-repository">
+            <h2 id="creating-repository">Creating the Repository</h2>
+            <p>Now, let's create a home for our SQL project. We'll call it 'bookcycle_queries'. To do this we'll run the make directory command followed by the name of the directory. Then we'll run the "cd" command with the new directory name. CD stands for Change directory and allows us to move into the new directory.</p>
+            
+            <div role="region" aria-labelledby="create-directory" class="code-example">
+                <h3 id="create-directory" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Creating directory commands">!mkdir bookcycle_queries
+%cd bookcycle_queries</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>To see the directory you created, navigate to the side panel where you will find a folder named "bookcyle_queries". Notice the timestamp under "last Modified" label. This is the directory that you just created.</p>
+            
+            <p>Now its time to initialize our Git repository by running the command "git init"</p>
+            
+            <div role="region" aria-labelledby="git-init" class="code-example">
+                <h3 id="git-init" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Git initialization command">!git init</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>You should see now a message about initializing an empty repository. Think of this as creating a special folder that can track all changes to our SQL files.</p>
+            
+            <p>Let's add a .gitignore file - this is like a VIP list, but in reverse. It tells Git which files NOT to track:</p>
+            
+            <div role="region" aria-labelledby="gitignore-creation" class="code-example">
+                <h3 id="gitignore-creation" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Creating gitignore file command">%%writefile .gitignore
+*.db
+*.sqlite
+.ipynb_checkpoints/</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>In real projects, this prevents cluttering your repository with database files and temporary files.</p>
+        </section>
+        
+        <section aria-labelledby="adding-first-query">
+            <h2 id="adding-first-query">Adding the First Query</h2>
+            <p>Next Let's create our first SQL query file. This code is writing a file a called customeranslysis.sql Then inputting the information to include in the file, in this case a SQL query that finds customer ids and preferred story from members only, then orders the output by birth year.</p>
+            
+            <div role="region" aria-labelledby="create-sql-file" class="code-example">
+                <h3 id="create-sql-file" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Creating SQL file command">%%writefile customer_analysis.sql
+-- BookCycle Customer Analysis
+SELECT customer_id,  preferred_store
+FROM customer
+WHERE is_member == 1
+ORDER BY birth_year DESC;
+SELECT customer_name, purchase_count
+FROM customers
+WHERE purchase_count > 5
+ORDER BY purchase_count DESC;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>To view the new file, navigate to the bookcyle_queries folder. This contains the customer_analysis.sql file, which contains the query entered in the above code cell. This analyzes our member most active customers - something you might actually do when identifying loyal customers for a marketing campaign.</p>
+            
+            <p>Now, let's tell Git to add this file to its tracking by typing the git add command followed by the file name. We can output the status of this action by follow up with the git status command. The output gives us some important information about our tracking status:</p>
+            
+            <div role="region" aria-labelledby="git-add-status" class="code-example">
+                <h3 id="git-add-status" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Git add and status commands">!git add customer_analysis.sql
+
+!git status</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>For example, the Green text means the file is staged - think of it as being in Git's waiting room, ready to be saved permanently.</p>
+        </section>
+        
+        <section aria-labelledby="committing-changes">
+            <h2 id="committing-changes">Committing Changes</h2>
+            <p>To save it permanently, we'll create a commit - A commit is like taking a snapshot of our code: To make a commit, we run the git commit -m command, followed by a message that briefly describes the action taken. In this case - Initial commit: Add customer analysis query.</p>
+            
+            <div role="region" aria-labelledby="git-commit" class="code-example">
+                <h3 id="git-commit" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Git commit command">!git commit -m "Initial commit: Add customer analysis query"</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>Now, let's update our original SQL query to pull the join date and birth year city information - a common real-world requirement when analyzing regional customer behavior. We'll run the write file command again, followed by our updated query that now pulls the customer ids, preferred stores and join dates for all customers born after 1990.</p>
+            
+            <div role="region" aria-labelledby="update-sql-file" class="code-example">
+                <h3 id="update-sql-file" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Updating SQL file command">%%writefile customer_analysis.sql
+-- BookCycle Customer Analysis
+SELECT 
+    customer_id,
+    preferred_store,
+    join_datecity
+FROM customers
+WHERE birth_year > 1990;
+
+SELECT 
+    customer_name,
+    purchase_count,
+    city
+FROM customers
+WHERE purchase_count > 5
+ORDER BY purchase_count DESC;</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>You can check the customer_analysis.sql file again to see the code changes being reflected.</p>
+            
+            <p>Let's track and commit these changes by running the git add and git commit -m commands again. This time our commit message reads "Add city information to customer analysis". This commit message clearly describes what changed. This is crucial when working in teams!</p>
+            
+            <div role="region" aria-labelledby="git-add-commit-changes" class="code-example">
+                <h3 id="git-add-commit-changes" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Git add and commit for changes">!git add customer_analysis.sql
+!git commit -m "Add joining date information to customer analysis"</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>Lastly, let's run the git status command one more time. Notice how the output now shows that one file has been changed. This is the cool thing about git version control - every change is thoroughly tracked and documented.</p>
+        </section>
+
+        <section aria-labelledby="conclusion">
+            <h2 id="conclusion">Conclusion</h2>
+            <p>Let's review what we've accomplished:</p>
+            <ul aria-label="Accomplishments review">
+                <li>We set up Git for our SQL project</li>
+                <li>Created and initialized a repository</li>
+                <li>Added our first SQL query</li>
+                <li>Made and tracked changes professionally</li>
+                <li>You now have the fundamental skills to version control your SQL projects - a must-have for any data professional. Try the extra challenge by creating a new branch for advanced analysis, and remember: clear commit messages and consistent formatting make collaboration easier!</li>
+            </ul>
+            
+            <div class="validation-points" aria-labelledby="validation-points">
+                <h3 id="validation-points">Validation Points</h3>
+                <ul aria-label="Validation checkpoints">
+                    <li>After Git setup: You should see your Git version and configuration details</li>
+                    <li>After repository creation: You should see a confirmation of the new repository</li>
+                    <li>After staging: Look for your file in green in the status output</li>
+                    <li>After commits: You should see a confirmation message with your commit hash</li>
+                </ul>
+            </div>
+            
+            <p><em>Note: Include pause points after each major step to allow learners to catch up and practice</em></p>
+        </section>
+    </main>
+
+    <footer>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>

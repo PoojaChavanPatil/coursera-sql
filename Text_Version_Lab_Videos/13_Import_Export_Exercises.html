@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import/Export Exercises</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>Import/Export Exercises</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <h2 id="introduction">Introduction</h2>
+            <p>Imagine you've just started as a data analyst at BookCycle, and your manager hands you an Excel file with thousands of book records that need to be analyzed. How do you efficiently move this data into a database? Today, we'll solve this real-world challenge by learning essential data import and export techniques that every data analyst needs to master.</p>
+        </section>
+
+        <section aria-labelledby="learning-objectives">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>By the end of this tutorial, you'll be able to:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Import data from external CSV files into a SQLite database</li>
+                <li>Execute SQL queries on the imported data</li>
+                <li>Export query results for reporting purposes</li>
+            </ul>
+        </section>
+        
+        <section aria-labelledby="setup" class="step-section">
+            <h2 id="setup">Setting Up the Environment</h2>
+            <p>Let's examine each part of our setup code in detail: First we'll import the necessary libraries and connect to our database.</p>
+            
+            <div role="region" aria-labelledby="import-libraries" class="code-example">
+                <h3 id="import-libraries" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Import libraries code">import sqlite3
+import pandas as pd</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="libraries-explained">
+                <h3 id="libraries-explained">Library Imports Explained</h3>
+                <p>These import statements are crucial:</p>
+                <ul aria-label="Library import explanation">
+                    <li>sqlite3 is Python's built-in library for SQLite databases</li>
+                    <li>pandas gives us powerful data manipulation tools In your daily work, these will be your go-to libraries for data handling.</li>
+                </ul>
+            </div>
+            
+            <div role="region" aria-labelledby="db-connection" class="code-example">
+                <h3 id="db-connection" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Database connection code">conn = sqlite3.connect('bookcycle.db')
+cursor = conn.cursor()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="connection-explained">
+                <h3 id="connection-explained">Connection Explained</h3>
+                <p>This connection code:</p>
+                <ul aria-label="Connection code explanation">
+                    <li>Creates a new database file if it doesn't exist</li>
+                    <li>Opens a connection if the file exists</li>
+                    <li>The cursor is like our navigation tool in the database</li>
+                    <li>Think of the connection as opening a spreadsheet and the cursor as your active cell.</li>
+                </ul>
+            </div>
+            
+            <div role="region" aria-labelledby="helper-function" class="code-example">
+                <h3 id="helper-function" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Helper function code">def execute_query(query):
+    df = pd.read_sql_query(query, conn)
+    display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="helper-function-explained">
+                <h3 id="helper-function-explained">Helper Function Explained</h3>
+                <p>Then we'll create a helper function called execute_query. This helper function:</p>
+                <ul aria-label="Helper function explanation">
+                    <li>Takes a SQL query as input</li>
+                    <li>Executes it against our database</li>
+                    <li>Returns results as a pandas DataFrame and</li>
+                    <li>Displays them in a neat table format This saves us from writing repetitive code later.</li>
+                </ul>
+            </div>
+            
+            <div class="interactive-prompt" role="group" aria-labelledby="helper-function-prompt">
+                <h3 id="helper-function-prompt">Reflection Point</h3>
+                <p>Why do you think we're creating this helper function? What makes it useful?</p>
+                <details>
+                    <summary role="button" aria-expanded="false">Reflection point</summary>
+                    <div aria-live="polite">
+                        <p>The helper function increases code reusability, reduces repetitive code, standardizes how we execute and display query results, and makes our notebook cleaner and more maintainable.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+        
+        <section aria-labelledby="table-creation" class="step-section">
+            <h2 id="table-creation">Table Creation</h2>
+            
+            <div role="region" aria-labelledby="create-table-query" class="code-example">
+                <h3 id="create-table-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Create table query">create_table_query = """
+CREATE TABLE IF NOT EXISTS books (
+    book_id TEXT PRIMARY KEY,
+    title TEXT,
+    author TEXT,
+    isbn TEXT,
+    genre TEXT,
+    condition TEXT,
+    purchase_price REAL,
+    list_price REAL,
+    date_acquired TEXT,
+    current_location TEXT,
+    quantity INTEGER
+)
+"""</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="table-structure-explained">
+                <h3 id="table-structure-explained">Table Structure Explained</h3>
+                <p>Now let's create our table - books. This code creates the book table with its columns and their data types. Let's break down each field:</p>
+                <ul aria-label="Table fields explanation">
+                    <li>book_id: TEXT PRIMARY KEY - Unique identifier for each book</li>
+                    <li>title, author, isbn, genre, condition, date_acquired, and current_location: are all TEXT fields for basic book information</li>
+                    <li>Purchase_price and list_price: are the REAL type for precise decimal values</li>
+                    <li>And quantity: is an INTEGER field for holding stock counts</li>
+                    <li>The IF NOT EXISTS clause prevents errors if we run this multiple times - a common real-world scenario.</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section aria-labelledby="importing-data" class="step-section">
+            <h2 id="importing-data">Importing Data from CSV</h2>
+            <p>Next, we will import the data from a provided csv file into our new table using Pandas.</p>
+            
+            <div role="region" aria-labelledby="import-csv-pandas" class="code-example">
+                <h3 id="import-csv-pandas" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Import CSV with pandas code"># Method 1: Using pandas
+df = pd.read_csv("books.csv")
+df.to_sql("books", conn, if_exists='replace', index=False)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="import-method-explained">
+                <h3 id="import-method-explained">Import Method Explained</h3>
+                <p>This pandas method:</p>
+                <ul aria-label="Import method explanation">
+                    <li>Reads the entire CSV file into memory and</li>
+                    <li>Converts it directly to a database table</li>
+                    <li>The 'replace' mode option overwrites existing data and</li>
+                    <li>Setting the index=False prevents adding unnecessary columns</li>
+                </ul>
+            </div>
+        </section>
+
+        <section aria-labelledby="querying-data" class="step-section">
+            <h2 id="querying-data">Querying Imported Data</h2>
+            <p>Now that the data is imported, BookCycle wants to analyze their inventory so let's look at some different queries:</p>
+            
+            <div role="region" aria-labelledby="basic-verification" class="code-example">
+                <h3 id="basic-verification" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Basic verification query"># Basic verification query
+query = """
+SELECT * FROM books 
+LIMIT 5
+"""</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="verification-explained">
+                <h3 id="verification-explained">Verification Query Explained</h3>
+                <p>This simple query:</p>
+                <ul aria-label="Verification query explanation">
+                    <li>Retrieves all columns (*)</li>
+                    <li>Limits to 5 rows for quick verification and</li>
+                    <li>Helps check data structure and content</li>
+                </ul>
+            </div>
+            
+            <div class="interactive-prompt" role="group" aria-labelledby="classic-fiction-prompt">
+                <h3 id="classic-fiction-prompt">Practice Challenge</h3>
+                <p>Now it's your turn - write a query to find all books in the "Classic Fiction" genre. Here's how you could do it.</p>
+            </div>
+            
+            <div role="region" aria-labelledby="genre-specific" class="code-example">
+                <h3 id="genre-specific" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Genre-specific query"># Genre-specific query
+query = """
+SELECT 
+    title,
+    author,
+    list_price,
+    condition
+FROM books
+WHERE genre = 'Classic Fiction'
+ORDER BY list_price DESC
+"""</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="genre-query-explained">
+                <h3 id="genre-query-explained">Genre Query Explained</h3>
+                <p>This focused query:</p>
+                <ul aria-label="Genre query explanation">
+                    <li>Selects specific columns we need</li>
+                    <li>Filters for Classic Fiction only and</li>
+                    <li>Orders by price for value analysis This kind of query helps managers make pricing decisions.</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section aria-labelledby="exporting-data" class="step-section">
+            <h2 id="exporting-data">Exporting Query Results</h2>
+            <p>Now BookCycle needs to create a report of their high-value books for a management meeting. To do this they'll need to export data into the report. Exporting data is crucial for sharing insights with stakeholders who might not have database access. Let's begin this process by examining our high-value books with this query:</p>
+            
+            <div role="region" aria-labelledby="high-value-books" class="code-example">
+                <h3 id="high-value-books" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="High-value books query">query = """
+SELECT title, author, list_price
+FROM books
+WHERE list_price > 10
+ORDER BY list_price DESC
+"""
+cursor.execute(query)
+results = cursor.fetchall()</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="export-query-explained">
+                <h3 id="export-query-explained">Export Query Explained</h3>
+                <p>Let's break down this query:</p>
+                <ul aria-label="Export query explanation">
+                    <li>SELECT chooses only the columns stakeholders need</li>
+                    <li>WHERE list_price > 10 filters for higher-value inventory</li>
+                    <li>And ORDER BY list_price DESC shows most valuable books first This focused approach makes reports more readable and actionable.</li>
+                </ul>
+            </div>
+            
+            <p>Now that we know which columns we need for the report, let's export them with Pandas.</p>
+            
+            <div role="region" aria-labelledby="export-csv-code" class="code-example">
+                <h3 id="export-csv-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Export to CSV code"># Method 1: Using pandas
+df = pd.read_sql_query(query, conn)
+
+df.to_csv('high_value_books.csv', index=False)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="export-method-explained">
+                <h3 id="export-method-explained">Export Method Explained</h3>
+                <p>The pandas method:</p>
+                <ul aria-label="Export method explanation">
+                    <li>Creates a new DataFrame</li>
+                    <li>Exports it to a CSV in one line of code and</li>
+                    <li>Handles data formatting automatically</li>
+                </ul>
+                <p>Setting index=False prevents adding row numbers</p>
+            </div>
+            
+            <div class="interactive-prompt" role="group" aria-labelledby="combined-conditions">
+                <h3 id="combined-conditions">Your Turn!</h3>
+                <p>Now it's your turn! Let's get just a little more specific and create a new csv that contains only those books whose genre is Classic Fiction AND are over 10 dollars. Here's how you could do it:</p>
+            </div>
+            
+            <div role="region" aria-labelledby="combined-export-code" class="code-example">
+                <h3 id="combined-export-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Combined condition export code">query = """
+SELECT title, author, list_price
+FROM books
+WHERE list_price > 10
+AND genre = 'Classic Fiction'
+ORDER BY list_price DESC
+"""
+cursor.execute(query)
+results = cursor.fetchall()
+
+# Your code here to export the result to csv file
+execute_query(query)
+df = pd.read_sql_query(query, conn)
+df.to_csv('high_value_books_Classic_Fiction.csv', index=False)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="combined-query-explained">
+                <h3 id="combined-query-explained">Combined Query Explained</h3>
+                <p>This query:</p>
+                <ul aria-label="Combined query explanation">
+                    <li>Combines multiple WHERE conditions</li>
+                    <li>To export a new CSV containing only the columns title, author and list price</li>
+                    <li>For books over 10 dollars that are classic fiction.</li>
+                    <li>Export with Data Validation</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section aria-labelledby="conclusion">
+            <h2 id="conclusion">Conclusion</h2>
+            <p>Great job! Let's recap:</p>
+            <ul aria-label="Key takeaways">
+                <li>Today we've learned How to import data efficiently using different methods</li>
+                <li>Effective query writing for data analysis</li>
+                <li>Comprehensive report creation with error handling</li>
+                <li>As well as how to follow best practices for database operations.</li>
+            </ul>
+        </section>
+    </main>
+    
+    <footer>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>

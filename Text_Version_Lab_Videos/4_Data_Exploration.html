@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Exploration Lab</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>Data Exploration Lab</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <h2 id="introduction">Introduction</h2>
+            <p>Hey there, data explorers! Ever wondered how companies like Amazon or Netflix organize their vast product catalogs? Or how they quickly summarize millions of user ratings? In this video, we're exploring the world of sorting and summarizing data using SQL. These are essential skills that will make you a data analysis superhero, helping businesses make smarter decisions every day.</p>
+        </section>
+
+        <section aria-labelledby="learning-objectives">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>By the end of this video, you'll be able to:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Sort query results using ORDER BY</li>
+                <li>Use basic aggregate functions (COUNT, SUM, AVG) to summarize data</li>
+                <li>Apply filters with WHERE clauses in combination with aggregations</li>
+                <li>And most importantly, turn raw data into valuable business insights</li>
+            </ul>
+            <p>Now, let's jump into our BookCycle database and start exploring!</p>
+        </section>
+        
+        <section aria-labelledby="database-connection">
+            <h2 id="database-connection">Database Connection</h2>
+            <p>First things first, let's run the initial cell to connect to our database.</p>
+
+            <div role="region" aria-labelledby="connection-code" class="code-example">
+                <h3 id="connection-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Database connection code">import sqlite3
+import pandas as pd
+
+conn = sqlite3.connect('bookcycle.db')</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>This first block of code imports the necessary libraries and establishes a connection to our BookCycle database. Think of it as opening the door to our data warehouse.</p>
+            <p>Let's test our connection by querying the first 5 rows of the books table:</p>
+
+            <div role="region" aria-labelledby="test-query" class="code-example">
+                <h3 id="test-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Test query code">query = """
+SELECT *
+FROM books
+LIMIT 5;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>Our output shows the first 5 rows from the books table. Great! This let's us know we are connected and ready to explore our data.</p>
+        </section>
+        
+        <section aria-labelledby="sorting-data">
+            <h2 id="sorting-data">Sorting Data</h2>
+            <p>Now, let's step into the shoes of a manager at BookCycle. You want to quickly see your most expensive books. Here's where sorting comes in handy.</p>
+
+            <div role="region" aria-labelledby="sorting-price-code" class="code-example">
+                <h3 id="sorting-price-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Sorting by price code">query = """
+SELECT title, author, list_price
+FROM books
+ORDER BY list_price DESC
+LIMIT 10;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="query-breakdown">
+                <h3 id="query-breakdown">Query Breakdown</h3>
+                <p>Let's break this query down:</p>
+                <ul aria-label="Query components explanation">
+                    <li>The SELECT statement chooses the columns we want to see - title, author and list price</li>
+                    <li>The ORDER BY portion sorts our results</li>
+                    <li>DESC tells SQL to sort in descending order</li>
+                    <li>And LIMIT 10 ensures we only get the top 10 results</li>
+                </ul>
+            </div>
+            
+            <p>This query instantly gives us a snapshot of our premium inventory. Valuable information for pricing strategies or identifying high-value stock!</p>
+            
+            <div class="interactive-pause" role="note" aria-labelledby="sorting-pause">
+                <h3 id="sorting-pause" class="sr-only">Practice Pause</h3>
+                <p>Now it's your turn! Try sorting the books alphabetically by title and display the first 15 results.</p>
+                <p><em>[Pause for 5 seconds]</em></p>
+            </div>
+            
+            <p>Here's how you could do it: Your query state: SELECT title and author FROM the Books table, ORDER by title limit 15. Notice we didn't need to include anything after the ORDER BY clause to have it sort the books in alphabetical order. This is because the ORDER BY clause sorts ascending by default. You only need to specify DESC when sorting in descending order.</p>
+
+            <div role="region" aria-labelledby="sorting-alpha-code" class="code-example">
+                <h3 id="sorting-alpha-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Sorting alphabetically code">query = """
+SELECT title, author
+FROM books
+ORDER BY title
+LIMIT 15;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>The output from this query is a sorted list that could be useful for quickly locating books or creating an organized catalog.</p>
+        </section>
+        
+        <section aria-labelledby="aggregate-functions">
+            <h2 id="aggregate-functions">Using Aggregate Functions</h2>
+            <p>Now, let's zoom out and look at the big picture of our inventory. Aggregate functions help us summarize large amounts of data.</p>
+            <p>Let's start by counting the total number of books: We'll do this by adding the Count function to our query. Our query should read: SELECT Count open parenthesis, asterisk, close parentheses as total books FROM books. By running the cell, we find that our output reads total books, and the value is 100.</p>
+
+            <div role="region" aria-labelledby="counting-books-code" class="code-example">
+                <h3 id="counting-books-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Counting books code">query = """
+SELECT COUNT(*) as total_books
+FROM books;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>This is because COUNT(*) simply counts all rows in our table and by adding "as total books", we are asking our query to label the result as "total books". Hence our resulting table shows "total books, 100"</p>
+            <p>This query output gives management a quick overview of the total inventory size.</p>
+            <p>Next, let's calculate average prices: This can be done using the Average function which is AVG, open close parentheses. This function finds the average of all rows within the column that is placed within the parenthesis. Hence our query will read: Select average open parentheses purchase price close parenthesis as average purchase price comma average open parenthesis list price close parenthesis, as average list price from books.</p>
+
+            <div role="region" aria-labelledby="average-price-code" class="code-example">
+                <h3 id="average-price-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Average price calculation code">query = """
+SELECT 
+    AVG(purchase_price) as avg_purchase_price,
+    AVG(list_price) as avg_list_price
+FROM books;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>The output of this query shows the average purchase price and average list price of all books in the books table. By comparing average purchase price to average list price, we can get an idea of our overall markup.</p>
+            
+            <div class="interactive-pause" role="note" aria-labelledby="aggregate-pause">
+                <h3 id="aggregate-pause" class="sr-only">Aggregate Challenge</h3>
+                <p>Your turn! Can you calculate the total inventory value and count the number of unique authors?</p>
+                <p><em>[Pause for 5 seconds]</em></p>
+            </div>
+            
+            <p>To do this we'll use a new function - SUM - to sum up the list price column. and we'll add "DISTINCT" to our count function. Which is a directive to count only the unique values. gives only the unique values. Here's one way to do it: SELECT SUM parenthesis list price as total inventory value, COUNT parenthesis distinct author as unique authors FROM books.</p>
+
+            <div role="region" aria-labelledby="sum-distinct-code" class="code-example">
+                <h3 id="sum-distinct-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Sum and count distinct code">query = """
+SELECT 
+    SUM(list_price) as total_inventory_value,
+    COUNT(DISTINCT author) as unique_authors
+FROM books;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>SUM adds up all values in a column, giving us our total inventory value. COUNT(DISTINCT author) counts unique author names, helping us understand the diversity of our catalog.</p>
+        </section>
+        
+        <section aria-labelledby="filtering-aggregations">
+            <h2 id="filtering-aggregations">Combining Aggregations with Filters</h2>
+            <p>Let's get even more specific. Say we want to analyze certain genres or conditions. We can combine our aggregations with WHERE clauses to filter data.</p>
+            <p>For example, let's find the average price of classic fiction books by querying: SELECT average list price as average price classic fiction from books WHERE genre equals Classic Fiction.</p>
+
+            <div role="region" aria-labelledby="filtered-average-code" class="code-example">
+                <h3 id="filtered-average-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Filtered average price code">query = """
+SELECT AVG(list_price) as avg_price_classic_fiction
+FROM books
+WHERE genre = 'Classic Fiction';
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>This query filters for classic fiction books before calculating the average price. This could help in setting competitive prices for this specific genre.</p>
+            <p>Now, let's count books in 'Very Good' condition for each genre: Our query reads SELECT genre, Count asterisk as count very good, FROM books WHERE condition equals Very Good GROUP BY genre ORDER BY Count very good DESC.</p>
+
+            <div role="region" aria-labelledby="group-where-code" class="code-example">
+                <h3 id="group-where-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Group by with where clause code">query = """
+SELECT genre, COUNT(*) as count_very_good
+FROM books
+WHERE condition = 'Very Good'
+GROUP BY genre
+ORDER BY count_very_good DESC;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>This query introduces the GROUP BY clause, which allows us to perform aggregations on subsets of data. It's like creating mini-summaries for each genre. You can see it in action by observing the output form this cell. Each genre is listed out line by line with its count of books in very good condition.</p>
+            
+            <div class="interactive-pause" role="note" aria-labelledby="final-challenge">
+                <h3 id="final-challenge">Final Challenge</h3>
+                <p>Now Your final challenge: Can you find the total value of 'Like New' books for each location, sorted by total value?</p>
+                <p><em>[Pause for 5 seconds]</em></p>
+            </div>
+            
+            <p>Here's a solution:</p>
+
+            <div role="region" aria-labelledby="final-solution-code" class="code-example">
+                <h3 id="final-solution-code" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Final challenge solution code">query = """
+SELECT 
+    current_location,
+    SUM(list_price) as total_value_like_new
+FROM books
+WHERE condition = 'Like New'
+GROUP BY current_location
+ORDER BY total_value_like_new DESC;
+"""
+
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>This query combines filtering, grouping, aggregation, and sorting. It provides valuable insights into which locations hold the most valuable 'Like New' inventory.</p>
+        </section>
+        
+        <section aria-labelledby="conclusion">
+            <h2 id="conclusion">Conclusion</h2>
+            <p>Fantastic work! Let's recap what we've learned:</p>
+            <ul aria-label="Summary of learned concepts">
+                <li>We used ORDER BY to sort our data</li>
+                <li>We applied aggregate functions like COUNT, SUM, and AVG to summarize information</li>
+                <li>We combined WHERE clauses with aggregations to analyze specific subsets of data</li>
+                <li>Most importantly, we turned raw book data into actionable business insights</li>
+            </ul>
+            <p>These skills are crucial for real-world data analysis. Whether you're optimizing inventory, analyzing sales trends, or making pricing decisions, the techniques we've covered in this video will be your go-to tools. Keep practicing, and soon you'll be querying data like a pro!</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>

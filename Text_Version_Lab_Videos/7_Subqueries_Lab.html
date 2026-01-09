@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subqueries Lab</title>
+    <style>
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Focus indicator for keyboard navigation */
+        :focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+        
+        /* Code formatting */
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .code-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Section styling */
+        .operation-section,
+        .step-section,
+        .design-step,
+        .cleaning-step {
+            border-left: 4px solid #2196F3;
+            padding-left: 1em;
+            margin: 1.5em 0;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        
+        /* Explanation blocks */
+        .explanation {
+            margin: 1em 0;
+            padding: 0.5em;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+        }
+        
+        /* Key concepts and interactive elements */
+        .key-concept {
+            background-color: #E3F2FD;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .interactive-prompt,
+        .interactive-question,
+        .interactive-challenge,
+        .interactive-pause,
+        .pro-tip {
+            background-color: #e6f7ff;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 4px solid #1890ff;
+            border-radius: 5px;
+        }
+        
+        .ai-suggestion {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Warning and verification */
+        .warning-note {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .verification,
+        .verification-section {
+            background-color: #E8F5E9;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .verification-note {
+            background-color: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Additional utility classes */
+        .constraint-explanation,
+        .nested-list {
+            margin-left: 1.5em;
+        }
+        
+        /* Table styling for data comparison */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        caption {
+            font-weight: bold;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        .trade-offs,
+        .benefits {
+            background-color: #FFF3E0;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 5px;
+        }
+        
+        .benefits {
+            background-color: #E8F5E9;
+        }
+        
+        .validation-points {
+            border-left: 3px solid #4CAF50;
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        /* Enhanced keyboard navigation for details/summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary:focus {
+            outline: 2px solid #4A90E2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <main id="main-content">
+        <header>
+            <h1>Subqueries Lab</h1>
+        </header>
+        
+        <section aria-labelledby="introduction">
+            <h2 id="introduction">Introduction</h2>
+            <p>Welcome, data professionals! Are you ready to unlock the power of subsqueries in SQL to extract deeper insights from your datasets? Subqueries are queries that are nested within other queries and in this video, we'll unpack how to utilize this advanced sql skill by stepping into the role of a data analyst at BookCycle. In this role, you'll find which books are outperforming others in their genre by using subsqueries!</p>
+        </section>
+
+        <section aria-labelledby="learning-objectives">
+            <h2 id="learning-objectives">Learning Objectives</h2>
+            <p>By the end of this video, you'll be able to:</p>
+            <ul aria-label="Learning objectives list">
+                <li>Write subqueries to filter and aggregate data</li>
+                <li>Use nested queries to solve complex problems</li>
+                <li>Apply subqueries in WHERE, FROM, and SELECT clauses</li>
+            </ul>
+            <p>Let's jump in!</p>
+        </section>
+        
+        <section aria-labelledby="environment-setup">
+            <h2 id="environment-setup">Environment Setup</h2>
+            <p>First, let's set up our environment. We'll continue using Python with SQLite to query our BookCycle database.</p>
+            
+            <div role="region" aria-labelledby="db-connection" class="code-example">
+                <h3 id="db-connection" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Database connection code">import sqlite3
+import pandas as pd
+
+# Connect to the database
+conn = sqlite3.connect('bookcycle.db')</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+        </section>
+        
+        <section aria-labelledby="subquery-where-clause">
+            <h2 id="subquery-where-clause">Subqueries in WHERE Clause</h2>
+            <p>Now, Suppose BookCycle wants to find books priced above the average. Let's start with a basic query to determine their average list price. We'll use the average function with the list price column</p>
+            
+            <div role="region" aria-labelledby="avg-price-query" class="code-example">
+                <h3 id="avg-price-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Average price calculation query">query = """
+SELECT AVG(list_price) as avg_price
+FROM books;
+"""
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>The output from this query shows our average price is 11.01. Next, we'll incorporate this query into another one to help us find books over this average price.</p>
+            
+            <p>To do that, we'll incorporate our proposed subsquery into a WHERE Clause like this:</p>
+            
+            <div role="region" aria-labelledby="subquery-where-example" class="code-example">
+                <h3 id="subquery-where-example" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Subquery in WHERE clause example">query = """
+SELECT title, author, list_price
+FROM books
+WHERE list_price > (SELECT AVG(list_price) FROM books)
+LIMIT 5;
+"""
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="subquery-explanation">
+                <h3 id="subquery-explanation">Understanding WHERE Clause Subqueries</h3>
+                <p>Let's break this down:</p>
+                <ul aria-label="Subquery components explanation">
+                    <li>The outer query selects the title, author, and list price from the books table.</li>
+                    <li>The subquery (SELECT AVG(list_price) FROM books) calculates the average price.</li>
+                    <li>The WHERE clause filters for books priced above this average.</li>
+                    <li>This is powerful because it allows us to compare each book's price against a dynamically calculated average, all in one query!</li>
+                </ul>
+            </div>
+            
+            <div class="key-concept" aria-labelledby="subquery-benefits">
+                <h3 id="subquery-benefits" class="sr-only">Subquery Benefits</h3>
+                <p>Think about how you might have done this without a subquery. You'd need two separate queries, right? Subqueries make our analysis more efficient and concise.</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="subquery-from-clause">
+            <h2 id="subquery-from-clause">Subqueries in FROM Clause</h2>
+            <p>Next, let's use a subquery in the FROM clause to analyze high-value transactions. We will compare each transaction's sale_price against the dynamically calculated average sale_price across all transactions.
+            <br>First we'll generate the query that calculates the average sales price:</p>
+            
+            <div role="region" aria-labelledby="avg-sales-query" class="code-example">
+                <h3 id="avg-sales-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Average sales price calculation">query = """
+SELECT AVG(sale_price) as avg_sale_price
+FROM transactions;
+"""</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>Next, we'll insert this into our FROM clause to use it as a subquery within our main query.</p>
+            
+            <div role="region" aria-labelledby="from-clause-subquery" class="code-example">
+                <h3 id="from-clause-subquery" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Subquery in FROM clause example">query = """
+SELECT t.transaction_id, t.book_id, t.sale_price, t.store_location
+FROM transactions t
+JOIN (SELECT AVG(sale_price) as avg_sale_price FROM transactions) avg
+ON t.sale_price > avg.avg_sale_price
+LIMIT 5;
+"""
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="from-subquery-explanation">
+                <h3 id="from-subquery-explanation">Understanding FROM Clause Subqueries</h3>
+                <p>Here, we're:</p>
+                <ul aria-label="FROM subquery explanation">
+                    <li>Calculating the average sale price in a subquery</li>
+                    <li>Joining this result with the transactions table</li>
+                    <li>Filtering for transactions above the average price</li>
+                    <li>This technique is great for creating derived tables that we can then query further. It's like creating a temporary table on the fly!</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section aria-labelledby="correlated-subqueries">
+            <h2 id="correlated-subqueries">Correlated Subqueries</h2>
+            <p>Now, let's tackle a more complex problem using a correlated subquery. A correlated subquery is a subquery that references the outer query. In this query we want to find books that have sold more than the average number of copies for their genre.
+            <br>First, let's see the average number of copies sold per genre:</p>
+            
+            <div role="region" aria-labelledby="avg-copies-query" class="code-example">
+                <h3 id="avg-copies-query" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Average copies sold per genre query">query = """
+SELECT sales.genre, AVG(sales.count_per_book) AS avg_quantity
+FROM (
+    SELECT b.book_id, b.genre, COUNT(t.transaction_id) AS count_per_book
+    FROM books b
+    JOIN transactions t ON b.book_id = t.book_id
+    GROUP BY b.book_id, b.genre
+) sales
+GROUP BY sales.genre
+LIMIT 5;
+"""
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <p>Now, we'll use a correlated subquery to find books selling above their genre average:</p>
+            
+            <div role="region" aria-labelledby="correlated-subquery" class="code-example">
+                <h3 id="correlated-subquery" class="code-label">[Code begins here]</h3>
+                <pre><code aria-label="Correlated subquery complex example">query = """
+SELECT book_sales.title, book_sales.genre, book_sales.total_sales
+FROM (
+    SELECT b.book_id, b.title, b.genre, COUNT(t.transaction_id) AS total_sales
+    FROM books b
+    JOIN transactions t ON b.book_id = t.book_id
+    GROUP BY b.book_id, b.title, b.genre
+) book_sales
+JOIN (
+    SELECT sales.genre, AVG(sales.count_per_book) AS avg_genre_sales
+    FROM (
+        SELECT b.book_id, b.genre, COUNT(t.transaction_id) AS count_per_book
+        FROM books b
+        JOIN transactions t ON b.book_id = t.book_id
+        GROUP BY b.book_id, b.genre
+    ) sales
+    GROUP BY sales.genre
+) genre_avg ON book_sales.genre = genre_avg.genre
+WHERE book_sales.total_sales > genre_avg.avg_genre_sales
+LIMIT 5;
+"""
+df = pd.read_sql_query(query, conn)
+display(df)</code></pre>
+                <span class="code-label">[Code ends here]</span>
+            </div>
+            
+            <div class="explanation" aria-labelledby="complex-query-explanation">
+                <h3 id="complex-query-explanation">Understanding Correlated Subqueries</h3>
+                <p>This is more complex, but incredibly powerful. Here we are:</p>
+                <ul aria-label="Complex query explanation">
+                    <li>Finding the bestselling books that are performing above average sales within their genre.</li>
+                    <li>The query is looking at each book and doing three key things:
+                        <ul class="nested-list" aria-label="Three key operations">
+                            <li>Counting how many times each book was sold</li>
+                            <li>Calculating the average sales for books in the same genre</li>
+                            <li>Comparing the book's sales against its genre average</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <p>The logic is structured as follows:</p>
+                <ul aria-label="Query structure explanation">
+                    <li>The first subquery (book_sales) groups sales data by book, calculating the total number of transactions per book.</li>
+                    <li>The second subquery (genre_avg) calculates the average sales per book for each genre.</li>
+                    <li>The main query then filters books where their total sales exceed their genre's average.</li>
+                </ul>
+            </div>
+            
+            <div class="key-concept" aria-labelledby="analysis-insights">
+                <h3 id="analysis-insights">Business Insights</h3>
+                <p>Our result shows us books that are outperforming their genre's average sales, along with their total sales count.
+                <br>This type of analysis can help BookCycle identify their star performers in each genre, informing inventory and marketing decisions. Don't worry if the nested structure looks complex - we'll explore how to build these types of queries step by step in upcoming lessons!</p>
+            </div>
+        </section>
+        
+        <section aria-labelledby="conclusion">
+            <h2 id="conclusion">Conclusion</h2>
+            <p>Let's recap what we've learned:</p>
+            <ul aria-label="Key takeaways">
+                <li>We can use subqueries in WHERE clauses to filter based on aggregate calculations.</li>
+                <li>Subqueries in FROM clauses let us create derived tables for further analysis.</li>
+                <li>Correlated subqueries enable powerful row-by-row comparisons.</li>
+                <li>These techniques are essential for complex data analysis, allowing you to answer sophisticated business questions with SQL.</li>
+            </ul>
+            
+            <p>As you continue your journey in data science, you'll find subqueries indispensable for thorough analysis of your data. Keep practicing, and soon you'll be uncovering insights like a pro! In our next video, we'll explore even more advanced SQL techniques.</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p aria-hidden="true">End of tutorial</p>
+    </footer>
+</body>
+</html>
